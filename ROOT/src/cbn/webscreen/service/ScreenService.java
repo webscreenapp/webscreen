@@ -130,6 +130,7 @@ public class ScreenService {
 		screen.login = login;
 		screen.screenSize = new Dimension(request.screenWidth, request.screenHeight);
 		screen.segmentSize = new Dimension(request.segmentWidth, request.segmentHeight);
+		screen.aliveAt = System.currentTimeMillis();
 		
 		ScreenData.screenData.put(screenId, screen);
 

@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
 import cbn.webscreen.data.persistance.entitymanager.LoginEntityManager;
+import cbn.webscreen.job.ScreenCleanScheduler;
 import cbn.webscreen.job.UpdateCleanScheduler;
 
 @WebListener
@@ -32,12 +33,14 @@ public class Initialize implements ServletContextListener {
 	
     @Override
     public final void contextInitialized(final ServletContextEvent sce) {
+    	ScreenCleanScheduler.init();
 //    	UpdateCleanScheduler.init();
     }
 
 
 	@Override
     public final void contextDestroyed(final ServletContextEvent sce) {
+		ScreenCleanScheduler.destroy();
 //    	UpdateCleanScheduler.destroy();
     }
 

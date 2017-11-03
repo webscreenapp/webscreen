@@ -1,53 +1,50 @@
 
 function Screen(screenWidth, screenHeight, segmentWidth, segmentHeight){
 	
+	var self = this;
+	
 	this.screenWidth = screenWidth;
 	this.screenHeight = screenHeight;
 	this.segmentWidth = segmentWidth;
 	this.segmentHeight = segmentHeight;
 	
 	this.toString = function(){
-		return '{screenWidth: ' + this.screenWidth + ', screenHeight: ' + this.screenHeight + ', segmentWidth: ' + this.segmentWidth + ', segmentHeight: ' +	this.segmentHeight + '}'; 
+		return '{screenWidth: ' + self.screenWidth + ', screenHeight: ' + self.screenHeight + ', segmentWidth: ' + self.segmentWidth + ', segmentHeight: ' +	self.segmentHeight + '}'; 
 	}
 
 	this.getSegmentRectangle = function(i) {
 		
-		var row = Math.floor( i / this.getNumOfCols());
-		var col = i % this.getNumOfCols();
+		var row = Math.floor( i / self.getNumOfCols());
+		var col = i % self.getNumOfCols();
 		
 		var segmentWidth;
 		var segmentHeight;
 		
-		if (col * this.segmentWidth + this.segmentWidth > this.screenWidth) {
-			segmentWidth = this.screenWidth - col * this.segmentWidth;
+		if (col * self.segmentWidth + self.segmentWidth > self.screenWidth) {
+			segmentWidth = self.screenWidth - col * self.segmentWidth;
 		} else {
-			segmentWidth = this.segmentWidth;
+			segmentWidth = self.segmentWidth;
 		}
 		
-		if (row * this.segmentHeight + this.segmentHeight > this.screenHeight) {
-			segmentHeight = this.screenHeight - row * this.segmentHeight;
+		if (row * self.segmentHeight + self.segmentHeight > self.screenHeight) {
+			segmentHeight = self.screenHeight - row * self.segmentHeight;
 		} else {
-			segmentHeight = this.segmentHeight;
+			segmentHeight = self.segmentHeight;
 		}
 		
-		var xy = { 
-			x: col * screen.segmentWidth,
-			y: row * screen.segmentHeight
-		}
-		
-		return new Rectangle(col * screen.segmentWidth, row * screen.segmentHeight, segmentWidth, segmentHeight);
+		return new Rectangle(col * self.segmentWidth, row * self.segmentHeight, segmentWidth, segmentHeight);
 	}
 
 	this.getNumOfCols = function() {
-		return  Math.ceil( this.screenWidth / this.segmentWidth);
+		return  Math.ceil( self.screenWidth / self.segmentWidth);
 	}
 	
 	this.getNumOfRows = function() {
-		return  Math.ceil( this.screenHeight / this.segmentHeight);
+		return  Math.ceil( self.screenHeight / self.segmentHeight);
 	}
 	
 	this.getNumOfSegments = function() {
-		return this.getNumOfRows() * this.getNumOfCols();
+		return self.getNumOfRows() * self.getNumOfCols();
 	}
 }
 

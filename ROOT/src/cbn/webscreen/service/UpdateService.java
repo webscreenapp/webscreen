@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 
 import cbn.webscreen.data.inmemory.ScreenData;
+import cbn.webscreen.data.inmemory.ScreenData.Screen;
 import cbn.webscreen.data.inmemory.Updates;
 import cbn.webscreen.message.UpdateRequest;
 import cbn.webscreen.message.UpdateResponse;
@@ -52,6 +53,11 @@ public class UpdateService {
 		
 		if (request.screenId == null || request.screenId.isEmpty()) {
 			return ResponseFactory.error("missing attribute screenId");
+		}
+		
+		Screen screen = ScreenData.screenData.get(request.screenId);
+		if (screen == null) {
+			return ResponseFactory.error("no screen found with provided screenId");
 		}
 		
 		for (String update : request.updates) {

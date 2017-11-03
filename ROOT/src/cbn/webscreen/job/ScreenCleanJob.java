@@ -11,7 +11,7 @@ import cbn.webscreen.data.inmemory.Updates;
 
 public class ScreenCleanJob implements InterruptableJob {
 	
-	private final long SCREEN_TIMEOUT = 10000;
+	private final long SCREEN_TIMEOUT = 5000;
 
 	Thread thread = null;
 	

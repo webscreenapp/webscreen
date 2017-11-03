@@ -34,9 +34,14 @@ public class LoginService {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	public Response loginInfo(LoginRequest request) throws AuthenticationException, SQLException {
+		boolean isLoggedIn = Authentication.authenticated(httpServletRequest).isLoggedIn();
 		
 		LoginInfoResponse loginInfoResponse = new LoginInfoResponse();
-		loginInfoResponse.isLoggedIn = Authentication.authenticated(httpServletRequest).isLoggedIn();
+		loginInfoResponse.isLoggedIn = isLoggedIn; 
+		
+		if (isLoggedIn) {
+			loginInfoResponse.login = Authentication.authenticated(httpServletRequest).getLogin();
+		}
 
 		return Response.ok(loginInfoResponse).build();
 	}

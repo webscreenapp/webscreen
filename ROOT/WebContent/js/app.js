@@ -1,145 +1,94 @@
-function debug(s) {
-//	if(!$('#debug').length) {
-//		$('body').prepend('<div id="debug" style="position: fixed; right: 0px; bottom: 0px; width: 400px; height: 120px; color: red; border:1px solid red;"></div>');
-//	}
-//	$('#debug').prepend(s + '<br />');
-}
-
-/**
- * @param text
- * @param time - hide after (ms)
- * @param style 
- * 	 	- 'success' for green color 
- * 		- 'warning' for yellow color 
- * 		- 'error'   for red color 
- * 		- 'info'    for blue color
- */
-function notify(text, time, style) {
-	if (!(style=='success' || style=='warning' || style=='error' || style=='info')){
-		return;
-	}
-	if (typeof time !== 'number'){
-		return;
-	}
-	
-	if(!$('#notif').length) {
-		$('body').prepend('<div id="notif"></div>');
-	}
-	
-	var msg = $('<div class="msg ' + style + '">' + text + '</div>')
-	$('#notif').append(msg);
-
-	setTimeout(function() {
-		msg.remove();
-		
-		if ($('#notif').html() == '') {
-			$('#notif').remove();
-		}
-	}, time);
-}
-
-
-
 $(function() {
-	
-//	var test = new Test();
-//	
-//	notify(test.a, 2000, 'warning');
-//	notify(test.b, 2000, 'warning');
-//	
-//	test.a = 3;
-//	test.b = 4;
-//	notify(test.a, 2000, 'warning');
-//	notify(test.b, 2000, 'warning');
-//
-//	notify(test.test1(), 2000, 'error');
-//	notify(test.test3(), 2000, 'error');
-//	notify(test.test2(), 2000, 'error');
-	
-//	notify('test', 2000, 'warning');
-//	notify('test1', 1000, 'info');
-//	notify('test2', 6000, 'error');
-//	notify('test3', 3000, 'success');
-//	notify('test4!!!!!!!!!!!!!', 10000 , 'error');
-	
-	var data = [
-		{screenId: "abc123", owner: "ADMIN", isMyScreen: false, hasAccess: true},
-		{screenId: "xyz789", owner: "laksjdl", isMyScreen: false, hasAccess: false},
-		{screenId: "21nlks", owner: "lolololol", isMyScreen: true, hasAccess: true},
-		{screenId: "asffav", owner: "kaslkdlakmsndlkansolknlknxzlknclzmxnclmznxlssnxnxnxmcxinhjklnkljakmlsam", isMyScreen: false, hasAccess: true},
-		{screenId: "0sqnm4", owner: "lolololol", isMyScreen: true, hasAccess: true},
-		{screenId: "kqwnxx", owner: "testasdasd", isMyScreen: false, hasAccess: true},
-		{screenId: "abc123", owner: "ADMIN", isMyScreen: false, hasAccess: true},
-		{screenId: "xyz789", owner: "laksjdl", isMyScreen: false, hasAccess: false},
-		{screenId: "21nlks", owner: "lolololol", isMyScreen: true, hasAccess: true},
-		{screenId: "asffav", owner: "kaslkdlakmsndlkansolknlknxzlknclzmxnclmznxlssnxnxnxmcxinhjklnkljakmlsam", isMyScreen: false, hasAccess: true},
-		{screenId: "0sqnm4", owner: "lolololol", isMyScreen: true, hasAccess: true},
-		{screenId: "kqwnxx", owner: "testasdasd", isMyScreen: false, hasAccess: true},
-		{screenId: "sj3xpz", owner: "opkokok", isMyScreen: false, hasAccess: false}
-	];
-	
 	
 	var loginContent = new LoginContent();
 	var screenListContent = new ScreenListContent();
 	var screenContent = new ScreenContent();
+	var waitContent = new WaitContent();
 	
+	var currentContent = '';
 	
-	 
-	loginContent.render($('#content'));
-
-	loginContent.login(function() {
+	init();
+	
+	function init(){
+		waitContent.render($('#content'));
+		currentContent = 'wait';
 		
-		var loginPost = post('api/web/login', {login: 'test', password: 'test123'});
-		
-		loginPost.done(function(response) {
-			
-			var loginPost = post('api/web/login', {login: 'test', password: 'test123'});
-			x.render($('#content'), [], true);
-			
-			setTimeout(function() {
-				x.render($('#content'), data);
-			}, 3000);
-		});
-			
-		loginPost.fail(function(xhr, status, error) {
-			try{
-				notify(JSON.parse(xhr.responseText).message, 6000, 'error');
-			} catch(e){
-				notify(status, 6000, 'error');
+		var loginInfoPost = post('api/web/login/info');
+		loginInfoPost.fail(postFail);
+		loginInfoPost.done(function(response) {
+			if (response.isLoggedIn == true) {
+				showScreenListContent();
+			} else {
+				showLoginContent();
 			}
+			
+		});
+	}
+	
+	function showLoginContent(){
+		loginContent.render($('#content'));
+		currentContent = 'login';
+		
+		loginContent.signUp(function(s) {
+			notify('not implemented', 10000, 'error');
+		});
+		loginContent.login(function() {
+			var loginPost = post('api/web/login', {login: loginContent.getLogin(), password: loginContent.getPassword()});
+			loginPost.fail(postFail);
+			loginPost.done(function(response) {
+				showScreenListContent();
+			});
+		});
+	}
+	
+	function showScreenListContent(){
+		screenListContent.render($('#content'), [], true);
+		currentContent = 'screenList';
+		
+		var screenListPost = post('api/web/screen/list');
+		screenListPost.fail(postFail);
+		screenListPost.done(function(response) {
+			screenListContent.render($('#content'), response, false);
 		});
 		
-	});
-	
-	loginContent.signUp(function(s) {
-		notify("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut eu lacus ante. Aliquam magna ligula, vulputate vitae congue at, laoreet sit amet nisl. Aliquam ut vulputate nunc. Aenean vitae leo varius, hendrerit metus non, laoreet ante. Aliquam sit amet vehicula leo. Ut odio nulla, ultricies sit amet ultricies non, interdum sed lacus. Donec vulputate vestibulum arcu consequat dictum. Ut dictum sapien ac commodo condimentum. Maecenas facilisis fringilla magna, vitae pulvinar neque rutrum in. Duis et accumsan enim, nec aliquet arcu. Nam ac tincidunt mauris. ", 10000, 'warning');
-	});
-	
-	x.open(function(screenId) {
-		notify("openning " + screenId, 6000, 'info');
-	});
-	
-	
-	
-	
+		screenListContent.open(function(screenId) {
+			showScreenContent(screenId);
+		});
+		
+	}
+	 
+	function showScreenContent(screenId){
+
+		var screenInfoPost = post('api/web/screen/info', {screenId: screenId});
+		screenInfoPost.fail(postFail);
+		screenInfoPost.done(function(response) {
+			var screen = new Screen(response.screenWidth, response.screenHeight, response.segmentWidth, response.segmentHeight);
+			screenContent.screen = screen;
+			screenContent.screenId = screenId;
+			screenContent.imgUrl = 'api/web/image';
+
+			screenContent.render($('#content'));
+			currentContent = 'screen';
+			
+			screenContent.getVersions(function() {
+				var versionPost = post('api/web/image/version', {screenId: screenId});
+				versionPost.fail(function(xhr, status, error) {
+					postFail(xhr, status, error);
+					screenContent.stop();
+					showScreenListContent();
+				});
+				versionPost.done(function(response) {
+					screenContent.setVersions(response);
+				});
+			});
+			
+			screenContent.start();
+		});
+		
+	}
+
 	
 });
-
-//function Test() {
-//	this.a = 1;
-//	var b = 2;
-//	
-//	function test2(){
-//		return 10;
-//	}
-//	
-//	this.test1 = function() {
-//		return 111;
-//	} 
-//	this.test3 = function() {
-//		return test2() + 10;
-//	} 
-//};
 
 function ScreenListContent(){
 	
@@ -363,6 +312,7 @@ function ScreenContent(){
 	var run = false;
 	
 	var newVersions = [];
+	
 	var curVersions = [];
 	var images = [];
 	var order = [];
@@ -376,7 +326,8 @@ function ScreenContent(){
 	}
 	
 	this.start = function(){
-		if(!$('#screen').length || self.screen == null || self.imgUrl == null || screenId == null) {
+		if(!$('#screen').length || self.screen == null || self.imgUrl == null || self.screenId == null) {
+			console.log('start failed');
 			return;
 		}
 		
@@ -384,10 +335,12 @@ function ScreenContent(){
 		$('#screen').height(self.screen.screenHeight);
 		
 		for (var i = 0; i < self.screen.getNumOfSegments(); i++) {
+			
+			curVersions[i] = 0;
 
 			var row = Math.floor( i / self.screen.getNumOfCols());
 			var col = i % self.screen.getNumOfCols();
-			
+			console.log('img x:' + col + ', y:' + row);
 			var x = col * self.screen.segmentWidth;
 			var y = row * self.screen.segmentHeight;
 			
@@ -410,12 +363,17 @@ function ScreenContent(){
 		run = false;
 	}
 	
-	const GET_VERSIONS_INTERVAL = 200;
-	const DRAW_IMAGE_INTERVAL = 10;
+	this.setVersions = function(versions) {
+		newVersions = versions;
+		createRandomOrder();
+	}
+	
+	const GET_VERSIONS_INTERVAL = 500;
+	const DRAW_IMAGE_INTERVAL = 1;
 	
 	function recursiveGetVersions() {
 		if (run) {
-			newVersions = getVersionsCollback();
+			getVersionsCollback();
 			
 			setTimeout(function() {
 				recursiveGetVersions();
@@ -425,7 +383,7 @@ function ScreenContent(){
 
 	function recursiveDrawImage() {
 		if (run) {
-						
+			
 			while (!(newVersions[order[pointer]] > curVersions[order[pointer]])) {
 				pointer++;
 				if (pointer > self.screen.getNumOfSegments() - 1){
@@ -443,7 +401,7 @@ function ScreenContent(){
 
 				var url = self.imgUrl + '/' + self.screenId + '/' + index + '/' + new Date().getTime();
 			
-				image[index].attr('src', url); 
+				images[index].attr('src', url); 
 			
 				curVersions[index] = newVersions[index];
 				pointer++;
@@ -456,7 +414,7 @@ function ScreenContent(){
 	}
 	
 	this.getVersions = function(callback){
-		getVersionsCallback = callback;
+		getVersionsCollback = callback;
 	};
 	
 	var getVersionsCallback = null;
@@ -473,40 +431,60 @@ function ScreenContent(){
 	}
 }
 
+/**
+ * @param text
+ * @param time - hide after (ms)
+ * @param style 
+ * 	 	- 'success' for green color 
+ * 		- 'warning' for yellow color 
+ * 		- 'error'   for red color 
+ * 		- 'info'    for blue color
+ */
+function notify(text, time, style) {
+	if (!(style=='success' || style=='warning' || style=='error' || style=='info')){
+		return;
+	}
+	if (typeof time !== 'number'){
+		return;
+	}
+	
+	if(!$('#notif').length) {
+		$('body').prepend('<div id="notif"></div>');
+	}
+	
+	var msg = $('<div class="msg ' + style + '">' + text + '</div>')
+	$('#notif').append(msg);
+
+	setTimeout(function() {
+		msg.remove();
+		
+		if ($('#notif').html() == '') {
+			$('#notif').remove();
+		}
+	}, time);
+}
+
 function post(url, data){
 	var settings = {
 			async: true,
-//			url: 'api/web/login',
 			url: url,
 			method: 'POST',
-			contentType: 'application/json; charset=utf-8',
 			cache: false,
-			dataType: 'json',
-//			data: JSON.stringify({login: c.getLogin(), password: c.getPassword()})
-			data: JSON.stringify(data)
+	}
+
+	if (data) {
+		settings.contentType = 'application/json; charset=utf-8';
+		settings.dataType = 'json';
+		settings.data = JSON.stringify(data);
 	}
 	
 	return $.ajax(settings);
-	
-//	loginPost.done(function(response) {
-//		notify('login successful', 1000, 'success');
-//		x.render($('#content'), [], true);
-//		
-//		setTimeout(function() {
-//			x.render($('#content'), data);
-//		}, 3000);
-//	});
-//		
-//	loginPost.fail(function(xhr, status, error) {
-//		try{
-//			notify(JSON.parse(xhr.responseText).message, 6000, 'error');
-//		} catch(e){
-//			notify(status, 6000, 'error');
-//		}
-//	});
-//	
-//	x.open(function(screenId) {
-//		notify("openning " + screenId, 6000, 'info');
-//	});
+}
 
+var postFail = function(xhr, status, error) {
+	try{
+		notify(JSON.parse(xhr.responseText).message, 6000, 'error');
+	} catch(e){
+		notify('status: ' + xhr.status + ' - ' + xhr.statusText, 20000, 'error');
+	}
 }

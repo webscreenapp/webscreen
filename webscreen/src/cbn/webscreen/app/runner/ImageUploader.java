@@ -66,7 +66,7 @@ public class ImageUploader implements Runnable {
 							imageRequest.screenId = Data.screenId;
 							imageRequest.version = version;
 							
-							Rectangle rct = Data.screen.getSegmentRectangle(i);
+							Rectangle rct = Data.screen.getSegmentRectangle(index);
 							
 							BufferedImage img = Data.screenImage.getSubimage(rct.x, rct.y, rct.width, rct.height);
 							

@@ -1,6 +1,8 @@
 package cbn.webscreen.service;
 
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -18,14 +20,17 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 
 import cbn.webscreen.data.inmemory.ScreenData;
+import cbn.webscreen.data.inmemory.ScreenData.Screen;
 import cbn.webscreen.data.persistance.entity.Login;
 import cbn.webscreen.data.persistance.entity.LoginAccess;
 import cbn.webscreen.data.persistance.entitymanager.LoginAccessEntityManager;
 import cbn.webscreen.data.persistance.entitymanager.LoginEntityManager;
 import cbn.webscreen.message.ImageRequest;
+import cbn.webscreen.message.ImageVersionRequest;
 import cbn.webscreen.security.Authentication;
 import cbn.webscreen.security.AuthenticationException;
 import cbn.webscreen.util.ResponseFactory;
+import cbn.webscreen.util.ScreenParameters;
 
 @Path("/")
 public class ImageService {
@@ -78,6 +83,8 @@ public class ImageService {
 	public Response putImage(
 		@FormDataParam("image") ImageRequest request,
 		@FormDataParam("bytes") byte[] bytes) {
+		
+		logger.info(request.index + ":" + request.version);
 
 		// TODO: login check
 		
@@ -100,6 +107,48 @@ public class ImageService {
 		screen.versions.put(request.index, request.version);
 		
 		return ResponseFactory.success();
+	}
+
+	@Path("/web/image/version")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+	public Response imageVersion(ImageVersionRequest request) throws AuthenticationException, SQLException {
+		
+		String login = Authentication.authenticated(httpServletRequest).getLogin();
+		
+		if (request.screenId == null || request.screenId.isEmpty()) {
+			return ResponseFactory.error("missing attribute screenId");
+		}
+		
+		Screen screen = ScreenData.screenData.get(request.screenId);
+		if (screen == null) {
+			return ResponseFactory.error("no screen found with provided screenId");
+		}
+
+		// check if own screen
+		if (!login.equals(screen.login)) {
+			
+			// check if have access
+			LoginAccess loginAccess = LoginAccessEntityManager.selectByLoginAndAccessLogin(screen.login, login);
+			if (loginAccess == null) {
+				return ResponseFactory.noAccess("no access");
+			}
+		}
+
+		List<Integer> versions = new LinkedList<Integer>();
+		
+		ScreenParameters screenParameters = new ScreenParameters(screen.screenSize, screen.segmentSize);
+		for (int i = 0; i < screenParameters.getNumOfSegments(); i++) {
+			Integer version = screen.versions.get(i);
+			if (version != null) {
+				versions.add(version);
+			} else {
+				versions.add(0);
+			}
+		}
+		
+		return Response.ok(versions).build();
 	}
 	
 }

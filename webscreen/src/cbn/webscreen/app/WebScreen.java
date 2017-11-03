@@ -64,9 +64,13 @@ public class WebScreen {
 			public void resizeStop() {
 				Data.captureArea = mainWindow.getCaptureArea();
 				Data.screen.setScreenSize(Data.captureArea.getSize());
-				DifferenceDetector.start();
-				System.out.println("resumed");
-				updateScreen();
+				if (running) {
+					DifferenceDetector.start();
+					
+					if (Data.screenId != null && !Data.screenId.isEmpty()) {
+						updateScreen();
+					}
+				}
 			}
 			
 			@Override
@@ -110,12 +114,8 @@ public class WebScreen {
 				
 				mainWindow.setVisible(true);
 				
-				Data.captureArea = mainWindow.getCaptureArea();
-				Data.screen.setScreenSize(Data.captureArea.getSize());
+				createToggleListener();
 
-				createScreen();
-				//new ShowCapture();                                               
-				
 			} else if (response.getStatus() == Response.Status.UNAUTHORIZED.getStatusCode()) {
 				ErrorResponse responseEntity = response.readEntity(ErrorResponse.class);
 				loginWindow.setStatusText(responseEntity.message);
@@ -162,8 +162,6 @@ public class WebScreen {
 
 				Data.screenId = responseEntity.screenId;
 				
-				createToggleListener();
-				
 			} else if (response.getStatus() == Response.Status.UNAUTHORIZED.getStatusCode()) {
 				ErrorResponse responseEntity = response.readEntity(ErrorResponse.class);
 				System.err.println(responseEntity.message);
@@ -193,6 +191,12 @@ public class WebScreen {
 
 				if (!running) {
 					running = true;
+
+					Data.captureArea = mainWindow.getCaptureArea();
+					Data.screen.setScreenSize(Data.captureArea.getSize());
+
+					createScreen();
+					
 					start();
 					mainWindow.setToggleButtonText("pause");
 				} else {
@@ -233,8 +237,6 @@ public class WebScreen {
 			
 			if (response.getStatus() == Response.Status.OK.getStatusCode()) {
 //				SuccessResponse responseEntity = response.readEntity(SuccessResponse.class);
-				
-				
 				
 			} else if (response.getStatus() == Response.Status.UNAUTHORIZED.getStatusCode()) {
 				ErrorResponse responseEntity = response.readEntity(ErrorResponse.class);

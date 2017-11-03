@@ -6,7 +6,7 @@ import java.awt.Rectangle;
 /**
  * stores screen parameters and calculates coordinates
  */
-public class Screen {
+public class ScreenParameters {
 
     private Dimension screenSize;
     private Dimension segmentSize;
@@ -17,7 +17,7 @@ public class Screen {
      * @param screenSize screen size
      * @param segmentSize segment size
      */
-    public Screen(Dimension screenSize, Dimension segmentSize) {
+    public ScreenParameters(Dimension screenSize, Dimension segmentSize) {
         this.screenSize = screenSize;
         this.segmentSize = segmentSize;
     }
@@ -25,7 +25,7 @@ public class Screen {
     /**
      * constructor
      */
-    public Screen() {
+    public ScreenParameters() {
     }
 
     /**
