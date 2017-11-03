@@ -340,7 +340,7 @@ function ScreenContent(){
 
 			var row = Math.floor( i / self.screen.getNumOfCols());
 			var col = i % self.screen.getNumOfCols();
-			console.log('img x:' + col + ', y:' + row);
+
 			var x = col * self.screen.segmentWidth;
 			var y = row * self.screen.segmentHeight;
 			
@@ -373,7 +373,7 @@ function ScreenContent(){
 	
 	function recursiveGetVersions() {
 		if (run) {
-			getVersionsCollback();
+			getVersionsCallback();
 			
 			setTimeout(function() {
 				recursiveGetVersions();
@@ -414,7 +414,7 @@ function ScreenContent(){
 	}
 	
 	this.getVersions = function(callback){
-		getVersionsCollback = callback;
+		getVersionsCallback = callback;
 	};
 	
 	var getVersionsCallback = null;
