@@ -137,7 +137,7 @@ public class MainWindow extends JFrame {
 //		System.out.println(getLocationOnScreen().y);
 //		System.out.println(getSize().width);
 //		System.out.println(getSize().height);
-		return new Rectangle(getLocationOnScreen(), getSize());
+		return new Rectangle(getLocationOnScreen().x + 5, getLocationOnScreen().y + 29, getSize().width - 10, getSize().height - 34);
 	}
 	
 	public void setRunningState(boolean runningState) {

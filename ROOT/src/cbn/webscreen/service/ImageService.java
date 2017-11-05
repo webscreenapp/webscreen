@@ -98,7 +98,7 @@ public class ImageService {
 
 		ScreenData.Screen screen = ScreenData.screenData.get(request.screenId);
 		if (screen == null) {
-			return ResponseFactory.error("no screen found with provided screenId");
+			return ResponseFactory.error("no screen found with specified screenId");
 		}
 		
 		//TODO: check access
@@ -123,7 +123,7 @@ public class ImageService {
 		
 		Screen screen = ScreenData.screenData.get(request.screenId);
 		if (screen == null) {
-			return ResponseFactory.error("no screen found with provided screenId");
+			return ResponseFactory.error("no screen found with specified screenId");
 		}
 
 		// check if own screen

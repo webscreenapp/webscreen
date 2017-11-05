@@ -57,15 +57,22 @@ public class UpdateService {
 		
 		Screen screen = ScreenData.screenData.get(request.screenId);
 		if (screen == null) {
-			return ResponseFactory.error("no screen found with provided screenId");
+			return ResponseFactory.error("no screen found with specified screenId");
 		}
 		
 		for (String update : request.updates) {
 			if ("screen.pause".equals(update)) {
 				ScreenData.screenData.get(request.screenId).paused = true;
+				Updates.addScreenWebUpdate(request.screenId, "screen.pause");
 			}
+			
 			if ("screen.resume".equals(update)) {
 				ScreenData.screenData.get(request.screenId).paused = false;
+				Updates.addScreenWebUpdate(request.screenId, "screen.resume");
+			}
+			
+			if ("screen.stop".equals(update)) {
+				Updates.addScreenWebUpdate(request.screenId, "screen.stop");
 			}
 			
 		}

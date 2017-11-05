@@ -57,6 +57,7 @@ public class Updates {
 		}
 		
 		if (screenId != null) {
+			// TODO: check screen access
 			List<Update> screenWebUpdateList = screenWebUpdates.get(screenId);
 			if (screenWebUpdateList != null) {
 				for (Update update : screenWebUpdateList) {

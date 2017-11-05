@@ -336,7 +336,7 @@ function ScreenContent(){
 		
 		for (var i = 0; i < self.screen.getNumOfSegments(); i++) {
 			
-			curVersions[i] = 0;
+			curVersions[i] = -1;
 
 			var row = Math.floor( i / self.screen.getNumOfCols());
 			var col = i % self.screen.getNumOfCols();
@@ -368,8 +368,8 @@ function ScreenContent(){
 		createRandomOrder();
 	}
 	
-	const GET_VERSIONS_INTERVAL = 500;
-	const DRAW_IMAGE_INTERVAL = 1;
+	const GET_VERSIONS_INTERVAL = 100;
+	const DRAW_IMAGE_INTERVAL = 2;
 	
 	function recursiveGetVersions() {
 		if (run) {
@@ -429,6 +429,37 @@ function ScreenContent(){
 			[a[i], a[j]] = [a[j], a[i]];
 		}
 	}
+}
+
+function Updater(){
+	
+	var self = this;
+	
+	this.updateUrl = null;
+	
+	var run = false;
+	
+	this.start = function(){
+		
+		run = true;
+		recursiveUpdate();
+	}
+	
+	this.stop = function(){
+		run = false;
+	}
+	
+	const UPDATE_INTERVAL = 500;
+	
+	function recursiveUpdate() {
+		if (run) {
+			
+			setTimeout(function() {
+				recursiveUpdate();
+			}, UPDATE_INTERVAL);
+		}
+	}
+	
 }
 
 /**

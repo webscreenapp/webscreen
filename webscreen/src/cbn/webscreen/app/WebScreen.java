@@ -281,6 +281,9 @@ public class WebScreen {
 				ImageUploader.stop();
 				ServerUpdater.stop();
 				
+				Data.updates.add("screen.stop");
+				ServerUpdater.sendUpdateRequest();
+				
 				System.out.println("stopped all");
 				
 				System.exit(0);
