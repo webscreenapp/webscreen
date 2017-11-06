@@ -1,6 +1,7 @@
 $(function() {
 	
 	var loginContent = new LoginContent();
+	var signupContent = new SignupContent();
 	var screenListContent = new ScreenListContent();
 	var screenContent = new ScreenContent();
 	var waitContent = new WaitContent();
@@ -36,7 +37,7 @@ $(function() {
 		currentContent = 'login';
 		
 		loginContent.signUp(function(s) {
-			notify('not implemented', 10000, 'error');
+			showSignupContent()
 		});
 		loginContent.login(function() {
 			var loginPost = post('api/web/login', {login: loginContent.getLogin(), password: loginContent.getPassword()});
@@ -45,6 +46,23 @@ $(function() {
 				showScreenListContent();
 				startUpdater();
 			});
+		});
+	}
+
+	function showSignupContent(){
+		signupContent.render($('#content'));
+		currentContent = 'signup';
+		
+		signupContent.signUp(function() {
+			if (signupContent.passwordMatch()){
+				var signupPost = post('api/web/signup', {login: loginContent.getLogin(), password: loginContent.getPassword()});
+				signupPost.fail(postFail);
+				signupPost.done(function(response) {
+					showLoginContent();
+				});
+			} else {
+				notify('passwords do not match', 6000, 'error');
+			}
 		});
 	}
 	
@@ -325,6 +343,60 @@ function LoginContent(){
 		return $('#login').length ? $('#login').val() : "";
 	};
 
+	this.setLogin = function(login) {
+		if ($('#login').length) {
+			$('#login').val(login);
+		}
+	};
+	
+	this.getPassword = function() {
+		return $('#password').length ? $('#password').val() : "";
+	};
+}
+function SignupContent(){
+	
+	var self = this;
+	
+	this.html = 
+		'<div id="container-signup">' +
+		'<label>login</label>' +
+		'<div><input type="text" id="login" /></div>' +
+		'<label>password</label>' +
+		'<div><input type="password" id="password" /></div>' +
+		'<label>password confirm</label>' +
+		'<div><input type="password" id="password-confirm" /></div>' +
+		'<div>' +
+		'<button id="button-signup">sign up</button>' +
+		'</div>' +
+		'</div>';
+	
+	
+	this.signUp = function(callback){
+		self.signUpCallback = callback;
+	};
+	
+	this.signUpCallback = null;
+	
+	this.render = function(target) {
+		
+		target.html(self.html);
+		
+		$('#button-signup').click(function() {
+			if (typeof self.signUpCallback === 'function') {
+				self.signUpCallback();
+			}
+		});
+		
+	};
+	
+	this.passwordMatch = function(){
+		return ($('#password').length && $('#password-confirm').length && $('#password').val() == $('#password-confirm').val());
+	}
+	
+	this.getLogin = function() {
+		return $('#login').length ? $('#login').val() : "";
+	};
+	
 	this.setLogin = function(login) {
 		if ($('#login').length) {
 			$('#login').val(login);

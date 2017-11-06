@@ -13,6 +13,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
+import cbn.webscreen.data.persistance.entitymanager.LoginAccessEntityManager;
 import cbn.webscreen.data.persistance.entitymanager.LoginEntityManager;
 import cbn.webscreen.job.ScreenCleanScheduler;
 import cbn.webscreen.job.UpdateCleanScheduler;
@@ -101,6 +102,7 @@ public class Initialize implements ServletContextListener {
     		Class.forName("org.sqlite.JDBC");
     		
 			LoginEntityManager.createTable();
+			LoginAccessEntityManager.createTable();
 			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());

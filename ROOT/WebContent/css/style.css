@@ -105,7 +105,60 @@ body {
 	text-decoration: underline;
 }
 
-#container-login #button-login{
+#container-login #button-login {
+	font-size: 1.6em;
+	float: right;
+}
+#container-signup {
+	position: absolute;
+    top: 40%;
+    left: 50%;
+
+	width: 320px;
+	height: 320px;
+
+	padding: 80px;
+    
+    transform: translate(-50%, -50%);
+	
+	color: white;
+	background-color: #102030;
+}
+
+#container-signup label {
+	display: block;
+	padding-top: 26px;
+	font-family: sans-serif;
+}
+
+#container-signup input:focus {
+	background-color: #F4F8FA
+}
+	
+#container-signup input {
+	box-sizing: border-box;
+	outline: none;
+	width: 100%;
+	height: 40px;
+	padding-left: 12px;
+	padding-right: 12px;
+	font-size: 1.15em;
+	border: 0px;
+}
+
+#container-signup button {
+	outline: none;
+	padding-top: 8px;
+	background-color: rgba(0, 0, 0, 0);
+	border: none; 
+	color: white;
+}
+
+#container-signup button:hover {
+	text-decoration: underline;
+}
+
+#container-signup #button-signup {
 	font-size: 1.6em;
 	float: right;
 }
