@@ -55,6 +55,8 @@ public class UpdateService {
 			return ResponseFactory.error("missing attribute screenId");
 		}
 		
+		// TODO: check access
+		
 		Screen screen = ScreenData.screenData.get(request.screenId);
 		if (screen == null) {
 			return ResponseFactory.error("no screen found with specified screenId");
@@ -72,7 +74,12 @@ public class UpdateService {
 			}
 			
 			if ("screen.stop".equals(update)) {
+				ScreenData.screenData.remove(request.screenId);
 				Updates.addScreenWebUpdate(request.screenId, "screen.stop");
+				Updates.addGlobalWebUpdate("screen.remove");
+				UpdateResponse updateResponse = new UpdateResponse();
+				updateResponse.lastUpdate = Updates.getLastUpdate();
+				return Response.ok(updateResponse).build();
 			}
 			
 		}

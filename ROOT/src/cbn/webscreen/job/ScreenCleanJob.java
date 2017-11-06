@@ -26,6 +26,7 @@ public class ScreenCleanJob implements InterruptableJob {
 			if (screen.aliveAt < System.currentTimeMillis() - SCREEN_TIMEOUT) {
 				ScreenData.screenData.remove(screenId);
 				Updates.addScreenWebUpdate(screenId, "screen.close");
+				Updates.addGlobalWebUpdate("screen.remove");
 			}
 		}
 		

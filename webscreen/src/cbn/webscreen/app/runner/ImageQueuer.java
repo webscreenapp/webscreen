@@ -27,6 +27,12 @@ public class ImageQueuer implements Runnable {
 	@Override
 	public void run() {
 		running = true;
+		
+		// wait for capture and detector
+		try {
+			Thread.sleep(250);
+		} catch (InterruptedException e1) {
+		}
 
 		while (run && running) {
 			

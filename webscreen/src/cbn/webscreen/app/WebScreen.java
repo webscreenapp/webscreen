@@ -65,7 +65,18 @@ public class WebScreen {
 				Data.captureArea = mainWindow.getCaptureArea();
 				Data.screen.setScreenSize(Data.captureArea.getSize());
 				if (running) {
+					
+//					for (Integer index : Data.currentVersions.keySet()) {
+//						Integer value = Data.currentVersions.get(index);
+//						Data.currentVersions.put(index, value + 1 );
+//					}
+					
+					Data.currentVersions.clear();
+					Data.uploadedVersions.clear();
+					
 					DifferenceDetector.start();
+					ImageQueuer.start();
+					ImageUploader.start();
 					
 					if (Data.screenId != null && !Data.screenId.isEmpty()) {
 						updateScreen();
@@ -76,6 +87,8 @@ public class WebScreen {
 			@Override
 			public void resizeStart() {
 				DifferenceDetector.stop();
+				ImageQueuer.stop();
+				ImageUploader.stop();
 			}
 		});
 		

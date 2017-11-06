@@ -4,8 +4,13 @@ $(function() {
 	var screenListContent = new ScreenListContent();
 	var screenContent = new ScreenContent();
 	var waitContent = new WaitContent();
+	var updater = new Updater();
 	
 	var currentContent = '';
+	
+	var lastUpdate = 0;
+	var updates = [];
+	var updateScreenId = null;
 	
 	init();
 	
@@ -18,6 +23,7 @@ $(function() {
 		loginInfoPost.done(function(response) {
 			if (response.isLoggedIn == true) {
 				showScreenListContent();
+				startUpdater();
 			} else {
 				showLoginContent();
 			}
@@ -37,6 +43,7 @@ $(function() {
 			loginPost.fail(postFail);
 			loginPost.done(function(response) {
 				showScreenListContent();
+				startUpdater();
 			});
 		});
 	}
@@ -69,6 +76,7 @@ $(function() {
 
 			screenContent.render($('#content'));
 			currentContent = 'screen';
+			updateScreenId = screenId;
 			
 			screenContent.getVersions(function() {
 				var versionPost = post('api/web/image/version', {screenId: screenId});
@@ -87,8 +95,50 @@ $(function() {
 		
 	}
 
+	function startUpdater(){
+		
+		updater.update(function() {
+			
+			var updatePost = post('api/web/update', {lastUpdate: lastUpdate, screenId: updateScreenId, updates: updates});
+			updatePost.fail(postFail);
+			updatePost.done(function(response) {
+				updates = [];
+				lastUpdate = response.lastUpdate;
+				
+				for (var i = 0; i < response.updates.length; i++) {
+					var update = response.updates[i];
+					
+					console.log(update);
+					
+					if (update == 'screen.new' && currentContent == 'screenList') {
+						showScreenListContent();
+					}
+					
+					if (update == 'screen.remove' && currentContent == 'screenList') {
+						showScreenListContent();
+					}
+					
+					if (update == 'screen.stop' && currentContent == 'screen') {
+						showScreenListContent();
+					}
+
+					if (update == 'screen.update' && currentContent == 'screen') {
+						showScreenContent(screenContent.screenId);
+					}
+					
+				}
+				
+				
+			});
+			
+			
+		});
+		
+		updater.start();
+	}
 	
 });
+
 
 function ScreenListContent(){
 	
@@ -325,11 +375,35 @@ function ScreenContent(){
 		shuffle(order);
 	}
 	
+		
+	
 	this.start = function(){
+		if (run) {
+			self.stop();
+		}
+		
+		//delayed start
+		setTimeout(function() {
+			startContinue();
+		}, START_DELAY);
+	}
+
+	function startContinue(){
+
 		if(!$('#screen').length || self.screen == null || self.imgUrl == null || self.screenId == null) {
 			console.log('start failed');
 			return;
 		}
+		
+		newVersions = [];
+		curVersions = [];
+		
+		for (var i = 0; i < images.length; i++) {
+			images[i].remove();
+		}
+		
+		images = [];
+		
 		
 		$('#screen').width(self.screen.screenWidth);
 		$('#screen').height(self.screen.screenHeight);
@@ -370,6 +444,7 @@ function ScreenContent(){
 	
 	const GET_VERSIONS_INTERVAL = 100;
 	const DRAW_IMAGE_INTERVAL = 2;
+	const START_DELAY = 1000;
 	
 	function recursiveGetVersions() {
 		if (run) {
@@ -435,8 +510,6 @@ function Updater(){
 	
 	var self = this;
 	
-	this.updateUrl = null;
-	
 	var run = false;
 	
 	this.start = function(){
@@ -454,12 +527,19 @@ function Updater(){
 	function recursiveUpdate() {
 		if (run) {
 			
+			updateCallback();
+			
 			setTimeout(function() {
 				recursiveUpdate();
 			}, UPDATE_INTERVAL);
 		}
 	}
 	
+	var updateCallback = null;
+	
+	this.update = function(callback) {
+		updateCallback = callback;
+	};
 }
 
 /**

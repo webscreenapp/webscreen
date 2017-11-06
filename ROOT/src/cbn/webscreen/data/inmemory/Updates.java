@@ -8,7 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 public class Updates {
+
+	private static Logger logger = Logger.getLogger(Updates.class);
 	
 	private static class Update {
 		
@@ -31,7 +35,7 @@ public class Updates {
 		return ++lastUpdate;
 	}
 	
-	public static long getLastUpdate() {
+	public static synchronized long getLastUpdate() {
 		return lastUpdate;
 	}
 	
@@ -40,7 +44,7 @@ public class Updates {
 		Set<String> updates = new HashSet<String>();
 		
 		for (Update update : globalWebUpdates) {
-			if (update.index < lastUpdate) {
+			if (update.index > lastUpdate) {
 				updates.add(update.update);
 			}
 		}
@@ -49,7 +53,7 @@ public class Updates {
 			List<Update> loginWebUpdateList = loginWebUpdates.get(login);
 			if (loginWebUpdateList != null) {
 				for (Update update : loginWebUpdateList) {
-					if (update.index < lastUpdate) {
+					if (update.index > lastUpdate) {
 						updates.add(update.update);
 					}
 				}
@@ -61,7 +65,7 @@ public class Updates {
 			List<Update> screenWebUpdateList = screenWebUpdates.get(screenId);
 			if (screenWebUpdateList != null) {
 				for (Update update : screenWebUpdateList) {
-					if (update.index < lastUpdate) {
+					if (update.index > lastUpdate) {
 						updates.add(update.update);
 					}
 				}
@@ -79,7 +83,7 @@ public class Updates {
 			List<Update> screenAppUpdateList = screenAppUpdates.get(screenId);
 			if (screenAppUpdateList != null) {
 				for (Update update : screenAppUpdateList) {
-					if (update.index < lastUpdate) {
+					if (update.index > lastUpdate) {
 						updates.add(update.update);
 					}
 				}

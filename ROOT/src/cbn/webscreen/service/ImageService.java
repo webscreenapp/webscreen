@@ -84,8 +84,6 @@ public class ImageService {
 		@FormDataParam("image") ImageRequest request,
 		@FormDataParam("bytes") byte[] bytes) {
 		
-		logger.info(request.index + ":" + request.version);
-
 		// TODO: login check
 		
 		if (bytes == null || bytes.length == 0) {
