@@ -460,16 +460,15 @@ function ScreenContent(){
 		
 	
 	this.start = function(){
-		if (run) {
-			self.stop();
+		if (!run) {
+			startContinue();
 		} else {
-			startContinue();
+			self.stop();
+			//delayed start
+			setTimeout(function() {
+				startContinue();
+			}, START_DELAY);
 		}
-		
-		//delayed start
-		setTimeout(function() {
-			startContinue();
-		}, START_DELAY);
 	}
 
 	function startContinue(){
