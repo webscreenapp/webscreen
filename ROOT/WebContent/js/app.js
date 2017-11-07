@@ -171,11 +171,9 @@ $(function() {
 						screenContent.stop();
 						showScreenContent(screenContent.screenId);
 					}
-					
 				}
 				
 			});
-			
 			
 		});
 		
@@ -184,6 +182,133 @@ $(function() {
 	
 });
 
+
+function WaitContent(){
+
+	var self = this;
+
+	this.html = '<div id="container-wait" class="waiting"><span>.</span><span>.</span><span>.</span></div>';
+
+	this.render = function(target) {
+		target.html(self.html);
+	}
+}
+
+function LoginContent(){
+	
+	var self = this;
+	
+	this.html = 
+		'<div id="container-login">' +
+		'<label>login</label>' +
+		'<div><input type="text" id="login" /></div>' +
+		'<label>password</label>' +
+		'<div><input type="password" id="password" /></div>' +
+		'<div>' +
+		'<button id="button-signup">sign up</button>' +
+		'<button id="button-login">login</button>' +
+		'</div>' +
+		'</div>';
+	
+	this.login = function(callback){
+		self.loginCallback = callback;
+	};
+	
+	this.loginCallback = null;
+	
+	this.signUp = function(callback){
+		self.signUpCallback = callback;
+	};
+	
+	this.signUpCallback = null;
+	
+	this.render = function(target) {
+		
+		target.html(self.html);
+		
+		$('#button-login').click(function() {
+			if (typeof self.loginCallback === 'function') {
+				self.loginCallback();
+			}
+		});
+		
+		$('#button-signup').click(function() {
+			if (typeof self.signUpCallback === 'function') {
+				self.signUpCallback();
+			}
+		});
+		
+	};
+	
+	this.getLogin = function() {
+		return $('#login').length ? $('#login').val() : "";
+	};
+
+	this.setLogin = function(login) {
+		if ($('#login').length) {
+			$('#login').val(login);
+		}
+	};
+	
+	this.getPassword = function() {
+		return $('#password').length ? $('#password').val() : "";
+	};
+}
+
+function SignupContent(){
+	
+	var self = this;
+	
+	this.html = 
+		'<div id="container-signup">' +
+		'<label>login</label>' +
+		'<div><input type="text" id="login" /></div>' +
+		'<label>password</label>' +
+		'<div><input type="password" id="password" /></div>' +
+		'<label>password confirm</label>' +
+		'<div><input type="password" id="password-confirm" /></div>' +
+		'<div>' +
+		'<button id="button-signup">sign up</button>' +
+		'</div>' +
+		'</div>';
+	
+	
+	this.signUp = function(callback){
+		self.signUpCallback = callback;
+	};
+	
+	this.signUpCallback = null;
+	
+	this.render = function(target) {
+		
+		target.html(self.html);
+		
+		$('#button-signup').click(function() {
+			if (typeof self.signUpCallback === 'function') {
+				self.signUpCallback();
+			}
+		});
+		
+	};
+	
+	this.passwordMatch = function(){
+		return ($('#password').length && $('#password-confirm').length && $('#password').val() == $('#password-confirm').val());
+	}
+	
+	this.getLogin = function() {
+		return $('#login').length ? $('#login').val() : "";
+	};
+	
+	this.setLogin = function(login) {
+		if ($('#login').length) {
+			$('#login').val(login);
+		}
+	};
+	
+	this.getPassword = function() {
+		return $('#password').length ? $('#password').val() : "";
+	};
+}
 
 function ScreenListContent(){
 	
@@ -306,7 +431,6 @@ function ScreenListContent(){
 		
 }
 
-
 function AccessListContent(){
 
 	var self = this;
@@ -387,10 +511,12 @@ function AccessListContent(){
 		});
 		
 		$('#button-save').click(function() {
+			unsaved = false;
 			self.saveCallback(data);
 		});
 		
 		$('#button-back').click(function() {
+			unsaved = false;
 			self.backCallback();
 		});
 		
@@ -420,133 +546,6 @@ function AccessListContent(){
 	this.backCallback = null;
 	
 }
-
-function WaitContent(){
-
-	var self = this;
-
-	this.html = '<div id="container-wait" class="waiting"><span>.</span><span>.</span><span>.</span></div>';
-
-	this.render = function(target) {
-		target.html(self.html);
-	}
-}
-
-function LoginContent(){
-	
-	var self = this;
-	
-	this.html = 
-		'<div id="container-login">' +
-		'<label>login</label>' +
-		'<div><input type="text" id="login" /></div>' +
-		'<label>password</label>' +
-		'<div><input type="password" id="password" /></div>' +
-		'<div>' +
-		'<button id="button-signup">sign up</button>' +
-		'<button id="button-login">login</button>' +
-		'</div>' +
-		'</div>';
-	
-	this.login = function(callback){
-		self.loginCallback = callback;
-	};
-	
-	this.loginCallback = null;
-	
-	this.signUp = function(callback){
-		self.signUpCallback = callback;
-	};
-	
-	this.signUpCallback = null;
-	
-	this.render = function(target) {
-		
-		target.html(self.html);
-		
-		$('#button-login').click(function() {
-			if (typeof self.loginCallback === 'function') {
-				self.loginCallback();
-			}
-		});
-		
-		$('#button-signup').click(function() {
-			if (typeof self.signUpCallback === 'function') {
-				self.signUpCallback();
-			}
-		});
-		
-	};
-	
-	this.getLogin = function() {
-		return $('#login').length ? $('#login').val() : "";
-	};
-
-	this.setLogin = function(login) {
-		if ($('#login').length) {
-			$('#login').val(login);
-		}
-	};
-	
-	this.getPassword = function() {
-		return $('#password').length ? $('#password').val() : "";
-	};
-}
-function SignupContent(){
-	
-	var self = this;
-	
-	this.html = 
-		'<div id="container-signup">' +
-		'<label>login</label>' +
-		'<div><input type="text" id="login" /></div>' +
-		'<label>password</label>' +
-		'<div><input type="password" id="password" /></div>' +
-		'<label>password confirm</label>' +
-		'<div><input type="password" id="password-confirm" /></div>' +
-		'<div>' +
-		'<button id="button-signup">sign up</button>' +
-		'</div>' +
-		'</div>';
-	
-	
-	this.signUp = function(callback){
-		self.signUpCallback = callback;
-	};
-	
-	this.signUpCallback = null;
-	
-	this.render = function(target) {
-		
-		target.html(self.html);
-		
-		$('#button-signup').click(function() {
-			if (typeof self.signUpCallback === 'function') {
-				self.signUpCallback();
-			}
-		});
-		
-	};
-	
-	this.passwordMatch = function(){
-		return ($('#password').length && $('#password-confirm').length && $('#password').val() == $('#password-confirm').val());
-	}
-	
-	this.getLogin = function() {
-		return $('#login').length ? $('#login').val() : "";
-	};
-	
-	this.setLogin = function(login) {
-		if ($('#login').length) {
-			$('#login').val(login);
-		}
-	};
-	
-	this.getPassword = function() {
-		return $('#password').length ? $('#password').val() : "";
-	};
-}
-
 
 function ScreenContent(){
 	
@@ -580,7 +579,6 @@ function ScreenContent(){
 	var run = false;
 	
 	var newVersions = [];
-	
 	var curVersions = [];
 	var images = [];
 	var order = [];

@@ -7,10 +7,8 @@ body {
 
 #content {
 	position: absolute;
-
 	width: 100%;
 	min-height: 100%;
-
 	color: white;
 	background-color: black;
 }
@@ -60,14 +58,10 @@ body {
 	position: absolute;
     top: 42%;
     left: 50%;
-
 	width: 320px;
 	height: 240px;
-
 	padding: 80px;
-    
     transform: translate(-50%, -50%);
-	
 	color: white;
 	background-color: #102030;
 }
@@ -113,14 +107,10 @@ body {
 	position: absolute;
     top: 40%;
     left: 50%;
-
 	width: 320px;
 	height: 320px;
-
 	padding: 80px;
-    
     transform: translate(-50%, -50%);
-	
 	color: white;
 	background-color: #102030;
 }
@@ -167,19 +157,11 @@ body {
 	position: relative;
     top: 0%;
     left: 50%;
-
 	width: 800px;
-/* 	max-height: 96%; */
-
 	padding: 40px;
-    
     transform: translate(-50%, 0%);
-	
 	color: white;
-/* 	background-color: #102030; */
-
 	font-family: sans-serif;
-	
 }
 
 #container-screen-list button {
@@ -255,7 +237,6 @@ body {
 #container-screen-list .cell {
 	display: inline-block;
 	height: 32px;
-/* 	margin: 0px; */
 	font-size: 1.2em;
 	position: absolute;
 	overflow: hidden;
@@ -275,21 +256,15 @@ body {
 	left: 82%;
 	width: 16%;
 }
+
 #container-access-list {
 	position: relative;
     top: 0%;
     left: 50%;
-
-	width: 800px;
-/* 	max-height: 96%; */
-
+	width: 600px;
 	padding: 40px;
-    
     transform: translate(-50%, 0%);
-	
 	color: white;
-/* 	background-color: #102030; */
-
 	font-family: sans-serif;
 	
 }
@@ -352,7 +327,6 @@ body {
 #container-access-list .cell {
 	display: inline-block;
 	height: 32px;
-/* 	margin: 0px; */
 	font-size: 1.2em;
 	position: absolute;
 	overflow: hidden;
@@ -372,14 +346,9 @@ body {
 	position: absolute;
     top: 2%;
     left: 50%;
-
 	width: auto;
 	height: auto;
-
-/* 	padding: 80px; */
-    
     transform: translate(-50%, 0%);
-	
 	color: white;
 }
 
