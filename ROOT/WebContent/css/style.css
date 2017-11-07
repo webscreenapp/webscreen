@@ -275,6 +275,98 @@ body {
 	left: 82%;
 	width: 16%;
 }
+#container-access-list {
+	position: relative;
+    top: 0%;
+    left: 50%;
+
+	width: 800px;
+/* 	max-height: 96%; */
+
+	padding: 40px;
+    
+    transform: translate(-50%, 0%);
+	
+	color: white;
+/* 	background-color: #102030; */
+
+	font-family: sans-serif;
+	
+}
+
+#container-access-list button {
+	outline: none;
+	background-color: rgba(0, 0, 0, 0);
+	color: white;
+	border: none; 
+	font-size: 1em;
+	text-align: left;
+	padding: 0px;
+}
+
+#container-access-list button:hover {
+	text-decoration: underline;
+}
+
+#container-access-list h2 {
+	display: inline-block;		
+}
+
+#container-access-list .button-allow {
+	color: green;
+}
+
+#container-access-list .button-deny {
+	color: red;
+}
+
+#container-access-list #button-save {
+	padding-top: 32px;
+	float: right;
+	font-size: 2em;
+}
+
+#container-access-list #button-back {
+	padding-top: 32px;
+}
+
+#container-access-list .row-header {
+	position: relative;
+	width: 100%;
+	min-height: 32px; 
+	color: #80A0D0;
+}
+
+#container-access-list .row-header .cell {
+	border-bottom: 1px solid #102030;
+	
+}
+
+#container-access-list .row {
+	padding-top: 24px;
+	position: relative;
+	width: 100%;
+	min-height: 42px; 
+}
+
+#container-access-list .cell {
+	display: inline-block;
+	height: 32px;
+/* 	margin: 0px; */
+	font-size: 1.2em;
+	position: absolute;
+	overflow: hidden;
+}
+
+#container-access-list .cell-1 {
+	left: 2%;
+	width: 60%;
+}
+
+#container-access-list .cell-2 {
+	left: 66%;
+	width: 32%;
+}
 
 #container-screen {
 	position: absolute;
@@ -297,7 +389,7 @@ body {
 	border: 5px solid #102030;
 }
 
-#button-back {
+#button-back-arrow {
 	position: fixed;
 	top: 0px;
 	left: 0px;
@@ -310,7 +402,7 @@ body {
 	z-index: 10;
 }
 
-#button-back:hover {
+#button-back-arrow:hover {
 	text-decoration: underline;
 }
 

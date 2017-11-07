@@ -18,12 +18,23 @@ public class LoginAccessEntityManager {
 		String sql = 
 				"CREATE TABLE IF NOT EXISTS login_access (" + 
 				"  login_id integer NOT NULL, " + 
-				"  access_login_id integer NOT NULL, " + 
-				"  PRIMARY KEY (login_id, access_login_id)," +
+				"  accessing_login_id integer NOT NULL, " + 
+				"  PRIMARY KEY (login_id, accessing_login_id)," +
 				"  FOREIGN KEY (login_id) REFERENCES login(id) ON DELETE CASCADE," + 
-				"  FOREIGN KEY (access_login_id) REFERENCES login(id) ON DELETE CASCADE" + 
+				"  FOREIGN KEY (accessing_login_id) REFERENCES login(id) ON DELETE CASCADE" + 
 				");";
 				
+		Statement st = connection.createStatement();
+		st.execute(sql);
+		
+		connection.close();
+	}
+	
+	public static void dropTable() throws SQLException {
+		Connection connection = DatabaseConnectionFactory.createConnection();
+		
+		String sql = "DROP TABLE login_access;";
+		
 		Statement st = connection.createStatement();
 		st.execute(sql);
 		
@@ -34,7 +45,7 @@ public class LoginAccessEntityManager {
 		LoginAccess loginAccess = new LoginAccess();
 		
 		loginAccess.loginId = resultSet.getInt("login_id");
-		loginAccess.accessLoginId = resultSet.getInt("access_login_id");
+		loginAccess.accessingLoginId = resultSet.getInt("accessing_login_id");
 		
 		return loginAccess;
 	}
@@ -51,12 +62,12 @@ public class LoginAccessEntityManager {
 	
 	public static void insert(LoginAccess loginAccess, Connection connection) throws SQLException {
 		
-		String sql = "INSERT INTO login_access (login_id, access_login_id) VALUES (?, ?);";
+		String sql = "INSERT INTO login_access (login_id, accessing_login_id) VALUES (?, ?);";
 		
 		PreparedStatement st = connection.prepareStatement(sql);
 		
 		st.setInt(1, loginAccess.loginId);
-		st.setInt(2, loginAccess.accessLoginId);
+		st.setInt(2, loginAccess.accessingLoginId);
 
 		st.executeUpdate();
 	}
@@ -73,38 +84,38 @@ public class LoginAccessEntityManager {
 	
 	public static void delete(LoginAccess loginAccess, Connection connection) throws SQLException {
 		
-		String sql = "DELETE FROM login_access WHERE login_id = ? AND access_login_id = ?;";
+		String sql = "DELETE FROM login_access WHERE login_id = ? AND accessing_login_id = ?;";
 		
 		PreparedStatement st = connection.prepareStatement(sql);
 		
 		st.setInt(1, loginAccess.loginId);
-		st.setInt(2, loginAccess.accessLoginId);
+		st.setInt(2, loginAccess.accessingLoginId);
 		
 		st.executeUpdate();
 	}
 	
-	public static LoginAccess selectByLoginIdAndAccessLoginId(int loginId, int accessLoginId) throws SQLException {
+	public static LoginAccess selectByLoginIdAndAccessLoginId(int loginId, int accessingLoginId) throws SQLException {
 		Connection connection = DatabaseConnectionFactory.createConnection();
 		
 		try {
-			return selectByLoginIdAndAccessLoginId(loginId, accessLoginId, connection);
+			return selectByLoginIdAndAccessLoginId(loginId, accessingLoginId, connection);
 		} finally {
 			connection.close();
 		}
 	}
 	
-	public static LoginAccess selectByLoginIdAndAccessLoginId(int loginId, int accessLoginId, Transaction transaction) throws SQLException {
-		return selectByLoginIdAndAccessLoginId(loginId, accessLoginId, transaction.getConnection());
+	public static LoginAccess selectByLoginIdAndAccessLoginId(int loginId, int accessingLoginId, Transaction transaction) throws SQLException {
+		return selectByLoginIdAndAccessLoginId(loginId, accessingLoginId, transaction.getConnection());
 	}
 	
-	public static LoginAccess selectByLoginIdAndAccessLoginId(int loginId, int accessLoginId, Connection connection) throws SQLException {
+	public static LoginAccess selectByLoginIdAndAccessLoginId(int loginId, int accessingLoginId, Connection connection) throws SQLException {
 		
-		String sql = "SELECT login_id, access_login_id FROM login_access WHERE login_id = ? AND access_login_id = ?;";
+		String sql = "SELECT login_id, accessing_login_id FROM login_access WHERE login_id = ? AND accessing_login_id = ?;";
 		
 		PreparedStatement st = connection.prepareStatement(sql);
 		
 		st.setInt(1, loginId);
-		st.setInt(2, accessLoginId);
+		st.setInt(2, accessingLoginId);
 		
 		ResultSet rs = st.executeQuery();
 		while (rs.next()) {
@@ -114,33 +125,33 @@ public class LoginAccessEntityManager {
 		return null;
 	}
 	
-	public static LoginAccess selectByLoginAndAccessLogin(String login, String accessLogin) throws SQLException {
+	public static LoginAccess selectByLoginAndAccessLogin(String login, String accessingLogin) throws SQLException {
 		Connection connection = DatabaseConnectionFactory.createConnection();
 		
 		try {
-			return selectByLoginAndAccessLogin(login, accessLogin, connection);
+			return selectByLoginAndAccessLogin(login, accessingLogin, connection);
 		} finally {
 			connection.close();
 		}
 	}
 	
-	public static LoginAccess selectByLoginAndAccessLogin(String login, String accessLogin, Transaction transaction) throws SQLException {
-		return selectByLoginAndAccessLogin(login, accessLogin, transaction.getConnection());
+	public static LoginAccess selectByLoginAndAccessLogin(String login, String accessingLogin, Transaction transaction) throws SQLException {
+		return selectByLoginAndAccessLogin(login, accessingLogin, transaction.getConnection());
 	}
 	
-	public static LoginAccess selectByLoginAndAccessLogin(String login, String accessLogin, Connection connection) throws SQLException {
+	public static LoginAccess selectByLoginAndAccessLogin(String login, String accessingLogin, Connection connection) throws SQLException {
 		
 		String sql = ""
-				+ "SELECT login_id, access_login_id "
+				+ "SELECT login_id, accessing_login_id "
 				+ "FROM login_access la "
 				+ "JOIN login l ON (la.login_id = l.id) "
-				+ "JOIN login a ON (la.access_login_id = a.id) "
+				+ "JOIN login a ON (la.accessing_login_id = a.id) "
 				+ "WHERE l.login = ? AND a.login = ?;";
 		
 		PreparedStatement st = connection.prepareStatement(sql);
 		
 		st.setString(1, login);
-		st.setString(2, accessLogin);
+		st.setString(2, accessingLogin);
 		
 		ResultSet rs = st.executeQuery();
 		while (rs.next()) {
@@ -168,7 +179,7 @@ public class LoginAccessEntityManager {
 		
 		List<LoginAccess> result = new LinkedList<LoginAccess>();
 		
-		String sql = "SELECT login_id, access_login_id FROM login_access;";
+		String sql = "SELECT login_id, accessing_login_id FROM login_access;";
 		
 		PreparedStatement st = connection.prepareStatement(sql);
 		
@@ -198,7 +209,7 @@ public class LoginAccessEntityManager {
 		
 		List<LoginAccess> result = new LinkedList<LoginAccess>();
 		
-		String sql = "SELECT login_id, access_login_id FROM login_access WHERE login_id = ?;";
+		String sql = "SELECT login_id, accessing_login_id FROM login_access WHERE login_id = ?;";
 		
 		PreparedStatement st = connection.prepareStatement(sql);
 		

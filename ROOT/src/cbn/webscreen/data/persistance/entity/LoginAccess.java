@@ -4,6 +4,6 @@ public class LoginAccess {
 	
 	public Integer loginId;
 	
-	public Integer accessLoginId;
+	public Integer accessingLoginId;
 
 }

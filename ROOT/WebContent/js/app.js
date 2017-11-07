@@ -3,6 +3,7 @@ $(function() {
 	var loginContent = new LoginContent();
 	var signupContent = new SignupContent();
 	var screenListContent = new ScreenListContent();
+	var accessListContent = new AccessListContent();
 	var screenContent = new ScreenContent();
 	var waitContent = new WaitContent();
 	var updater = new Updater();
@@ -79,7 +80,30 @@ $(function() {
 		screenListContent.open(function(screenId) {
 			showScreenContent(screenId);
 		});
+
+		screenListContent.openManageAccess(function() {
+			showAccessListContent();
+		});
 		
+	}
+	
+	function showAccessListContent(){
+		currentContent = 'accessList';
+		
+		var accessListPost = post('api/web/access/list');
+		accessListPost.fail(postFail);
+		accessListPost.done(function(response) {
+			accessListContent.render($('#content'), response, false);
+		});
+		accessListContent.save(function(data) {
+			var saveAccessPost = post('api/web/access/set', data);
+			saveAccessPost.done(function(response) {
+				showScreenListContent()
+			});
+		});
+		accessListContent.back(function() {
+			showScreenListContent()
+		});
 	}
 	 
 	function showScreenContent(screenId){
@@ -283,7 +307,119 @@ function ScreenListContent(){
 }
 
 
+function AccessListContent(){
 
+	var self = this;
+	
+	var unsaved = false;
+	
+	this.data = null;
+	this.target = null;
+	
+	this.render = function(target, data, waiting) {
+		
+		self.data = data;
+		self.target = target;
+		
+		var waitingAnimation = '<div class="placeholder waiting"><span>.</span><span>.</span><span>.</span></div>';
+		
+		var header = 
+			'<h2>manage access</h2> ' +
+			'<div class="row-header">' +
+			'<div class="cell cell-1 login-header">login</div> ' +
+			'<div class="cell cell-2 access-header"></div> ' +
+			'</div>' +
+			'';
+		
+		var rows = "";
+		
+		var rowCount = 0;
+		
+		for (var r in data) {
+			var row = 
+				'<div class="row">' +
+				
+				'<div class="cell cell-1 login">' + data[r].login + '</div> ' +
+				'';
+			
+			if (data[r].hasAccess) {
+				row = row +
+				'<div class="cell cell-2"><button class="button-deny" data-deny-id="' + data[r].id + '">deny</button></div>' +
+				'';
+			} else {
+				row = row +
+				'<div class="cell cell-2"><button class="button-allow" data-allow-id="' + data[r].id + '">allow</button></div>' +
+				'';
+			}
+			
+			row = row +
+			'</div>' +
+			'';
+			
+			rows = rows + row;
+		}
+		
+		var btnBack = '<button id="button-back">back</button>';
+		var btnSave = '';
+		if (unsaved){
+			btnSave = btnSave + '<button id="button-save">save</button>';
+		}
+		
+		var html = '<div id="container-access-list">' + 
+		header +
+		rows +
+		btnBack +
+		btnSave +
+		'</div>';
+		
+		target.html(html);
+		
+		$('.button-allow').each( function (i, obj) {
+			$(this).click(function() {
+				setAccess($(this).data('allow-id'), true);
+			});
+		});
+
+		$('.button-deny').each( function (i, obj) {
+			$(this).click(function() {
+				setAccess($(this).data('deny-id'), false);
+			});
+		});
+		
+		$('#button-save').click(function() {
+			self.saveCallback(data);
+		});
+		
+		$('#button-back').click(function() {
+			self.backCallback();
+		});
+		
+	};
+	
+	function setAccess(id, access){
+		for (var i in self.data) {
+			if (self.data[i].id == id) {
+				self.data[i].hasAccess = access;
+				unsaved = true;
+				self.render(self.target, self.data);
+				break;
+			}
+		}
+	}
+	
+	this.save = function(callback){
+		self.saveCallback = callback;
+	};
+	
+	this.saveCallback = null;
+
+	this.back = function(callback){
+		self.backCallback = callback;
+	};
+	
+	this.backCallback = null;
+	
+}
 
 function WaitContent(){
 
@@ -424,7 +560,7 @@ function ScreenContent(){
 		
 		var html = '';
 
-		html = html + '<button id="button-back">&lt;</button>';
+		html = html + '<button id="button-back-arrow">&lt;</button>';
 		html = html + '<div id="container-screen">';
 		html = html + '<div id="screen"></div>';
 		html = html + '';
@@ -433,7 +569,7 @@ function ScreenContent(){
 		
 		target.html(html);
 		
-		$('#button-back').click(function() {
+		$('#button-back-arrow').click(function() {
 			if (typeof self.backCallback === 'function') {
 				self.backCallback();
 			}
@@ -629,6 +765,62 @@ function Updater(){
 	this.update = function(callback) {
 		updateCallback = callback;
 	};
+}
+
+function Screen(screenWidth, screenHeight, segmentWidth, segmentHeight){
+	
+	var self = this;
+	
+	this.screenWidth = screenWidth;
+	this.screenHeight = screenHeight;
+	this.segmentWidth = segmentWidth;
+	this.segmentHeight = segmentHeight;
+	
+	this.toString = function(){
+		return '{screenWidth: ' + self.screenWidth + ', screenHeight: ' + self.screenHeight + ', segmentWidth: ' + self.segmentWidth + ', segmentHeight: ' +	self.segmentHeight + '}'; 
+	}
+
+	this.getSegmentRectangle = function(i) {
+		
+		var row = Math.floor( i / self.getNumOfCols());
+		var col = i % self.getNumOfCols();
+		
+		var segmentWidth;
+		var segmentHeight;
+		
+		if (col * self.segmentWidth + self.segmentWidth > self.screenWidth) {
+			segmentWidth = self.screenWidth - col * self.segmentWidth;
+		} else {
+			segmentWidth = self.segmentWidth;
+		}
+		
+		if (row * self.segmentHeight + self.segmentHeight > self.screenHeight) {
+			segmentHeight = self.screenHeight - row * self.segmentHeight;
+		} else {
+			segmentHeight = self.segmentHeight;
+		}
+		
+		return new Rectangle(col * self.segmentWidth, row * self.segmentHeight, segmentWidth, segmentHeight);
+	}
+
+	this.getNumOfCols = function() {
+		return  Math.ceil( self.screenWidth / self.segmentWidth);
+	}
+	
+	this.getNumOfRows = function() {
+		return  Math.ceil( self.screenHeight / self.segmentHeight);
+	}
+	
+	this.getNumOfSegments = function() {
+		return self.getNumOfRows() * self.getNumOfCols();
+	}
+}
+
+function Rectangle(x, y, width, height){
+	this.x = x;
+	this.y = y;
+	this.width = width;
+	this.height = height;
 }
 
 /**

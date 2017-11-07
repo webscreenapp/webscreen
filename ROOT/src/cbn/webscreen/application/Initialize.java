@@ -100,7 +100,6 @@ public class Initialize implements ServletContextListener {
     private static void createTables() {
     	try {
     		Class.forName("org.sqlite.JDBC");
-    		
 			LoginEntityManager.createTable();
 			LoginAccessEntityManager.createTable();
 			
