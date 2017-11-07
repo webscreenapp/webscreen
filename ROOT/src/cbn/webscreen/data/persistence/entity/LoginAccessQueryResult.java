@@ -1,4 +1,4 @@
-package cbn.webscreen.data.persistance.entity;
+package cbn.webscreen.data.persistence.entity;
 
 public class LoginAccessQueryResult {
 	

@@ -13,8 +13,8 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
-import cbn.webscreen.data.persistance.entity.Login;
-import cbn.webscreen.data.persistance.entitymanager.LoginEntityManager;
+import cbn.webscreen.data.persistence.entity.Login;
+import cbn.webscreen.data.persistence.entitymanager.LoginEntityManager;
 
 public class Authentication {
 	

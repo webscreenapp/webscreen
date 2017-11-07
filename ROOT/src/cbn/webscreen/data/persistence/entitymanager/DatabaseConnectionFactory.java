@@ -1,4 +1,4 @@
-package cbn.webscreen.data.persistance.entitymanager;
+package cbn.webscreen.data.persistence.entitymanager;
 
 import java.io.File;
 import java.sql.Connection;

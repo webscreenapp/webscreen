@@ -18,8 +18,8 @@ import org.apache.log4j.Logger;
 import cbn.webscreen.data.inmemory.ScreenData;
 import cbn.webscreen.data.inmemory.Updates;
 import cbn.webscreen.data.inmemory.Updates.Update;
-import cbn.webscreen.data.persistance.entity.Login;
-import cbn.webscreen.data.persistance.entitymanager.LoginEntityManager;
+import cbn.webscreen.data.persistence.entity.Login;
+import cbn.webscreen.data.persistence.entitymanager.LoginEntityManager;
 
 @Path("/")
 public class TestService {

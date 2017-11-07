@@ -2,8 +2,8 @@ package cbn.webscreen.security;
 
 import java.sql.SQLException;
 
-import cbn.webscreen.data.persistance.entity.LoginAccess;
-import cbn.webscreen.data.persistance.entitymanager.LoginAccessEntityManager;
+import cbn.webscreen.data.persistence.entity.LoginAccess;
+import cbn.webscreen.data.persistence.entitymanager.LoginAccessEntityManager;
 
 public class AccessControl {
 

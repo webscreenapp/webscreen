@@ -1,4 +1,4 @@
-package cbn.webscreen.data.persistance.entitymanager;
+package cbn.webscreen.data.persistence.entitymanager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import cbn.webscreen.data.persistance.entity.Login;
-import cbn.webscreen.data.persistance.entity.LoginAccessQueryResult;
+import cbn.webscreen.data.persistence.entity.Login;
+import cbn.webscreen.data.persistence.entity.LoginAccessQueryResult;
 
 public class CustomQuery {
 

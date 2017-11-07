@@ -12,11 +12,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import cbn.webscreen.data.persistance.entity.LoginAccess;
-import cbn.webscreen.data.persistance.entity.LoginAccessQueryResult;
-import cbn.webscreen.data.persistance.entitymanager.CustomQuery;
-import cbn.webscreen.data.persistance.entitymanager.LoginAccessEntityManager;
-import cbn.webscreen.data.persistance.entitymanager.LoginEntityManager;
+import cbn.webscreen.data.persistence.entity.LoginAccess;
+import cbn.webscreen.data.persistence.entity.LoginAccessQueryResult;
+import cbn.webscreen.data.persistence.entitymanager.CustomQuery;
+import cbn.webscreen.data.persistence.entitymanager.LoginAccessEntityManager;
+import cbn.webscreen.data.persistence.entitymanager.LoginEntityManager;
 import cbn.webscreen.security.Authentication;
 import cbn.webscreen.security.AuthenticationException;
 import cbn.webscreen.util.ResponseFactory;
