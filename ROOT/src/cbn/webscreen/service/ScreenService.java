@@ -19,16 +19,15 @@ import org.apache.log4j.Logger;
 import cbn.webscreen.data.inmemory.ScreenData;
 import cbn.webscreen.data.inmemory.ScreenData.Screen;
 import cbn.webscreen.data.inmemory.Updates;
-import cbn.webscreen.data.persistance.entity.Login;
 import cbn.webscreen.data.persistance.entity.LoginAccess;
 import cbn.webscreen.data.persistance.entitymanager.LoginAccessEntityManager;
-import cbn.webscreen.data.persistance.entitymanager.LoginEntityManager;
 import cbn.webscreen.message.ScreenAddRequest;
 import cbn.webscreen.message.ScreenAddResponse;
 import cbn.webscreen.message.ScreenInfoRequest;
 import cbn.webscreen.message.ScreenInfoResponse;
 import cbn.webscreen.message.ScreenResponse;
 import cbn.webscreen.message.ScreenUpdateRequest;
+import cbn.webscreen.security.AccessControl;
 import cbn.webscreen.security.Authentication;
 import cbn.webscreen.security.AuthenticationException;
 import cbn.webscreen.util.ResponseFactory;
@@ -73,7 +72,9 @@ public class ScreenService {
 				}
 			}
 			
-			screens.add(screenInfo);
+			if (!screen.stopped) {
+				screens.add(screenInfo);
+			}
 		}
 
 		return Response.ok(screens).build();
@@ -97,14 +98,8 @@ public class ScreenService {
 			return ResponseFactory.error("no screen found with specified screenId");
 		}
 
-		// check if own screen
-		if (!login.equals(screen.login)) {
-			
-			// check if have access
-			LoginAccess loginAccess = LoginAccessEntityManager.selectByLoginAndAccessLogin(screen.login, login);
-			if (loginAccess == null) {
-				return ResponseFactory.noAccess("no access");
-			}
+		if (!AccessControl.hasAccess(login, screen.login)) {
+			return ResponseFactory.noAccess("no access");
 		}
 		
 		ScreenInfoResponse response = new ScreenInfoResponse();
@@ -162,6 +157,9 @@ public class ScreenService {
 		
 		screen.screenSize = new Dimension(request.screenWidth, request.screenHeight);
 		screen.segmentSize = new Dimension(request.segmentWidth, request.segmentHeight);
+		
+		screen.versions.clear();
+		screen.images.clear();
 
 		Updates.addScreenWebUpdate(request.screenId, "screen.update");
 		

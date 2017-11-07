@@ -3,25 +3,23 @@ package cbn.webscreen.service.exception;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
 
-import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import cbn.webscreen.message.ErrorResponse;
 
-@Provider
-public class JsonParseExceptionMapper implements ExceptionMapper<JsonParseException> {
+public class InvalidFormatExceptionMapper implements ExceptionMapper<InvalidFormatException> {
 
 	@Override
-	public Response toResponse(JsonParseException e) {
-		
+	public Response toResponse(InvalidFormatException e) {
 		ErrorResponse errorResponse = new ErrorResponse();
 		
 		errorResponse.status = Status.BAD_REQUEST.getStatusCode();
-		errorResponse.message = "invalid data supplied for request";
+		errorResponse.message = "invalid data format supplied for request";
 		
 		return Response.status(Status.BAD_REQUEST)
 				.entity(errorResponse)
 				.build();
 	}
+
 }

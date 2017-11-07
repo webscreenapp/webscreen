@@ -18,6 +18,8 @@ public class ScreenData {
 		public long aliveAt = 0;
 		
 		public boolean paused = false;
+
+		public boolean stopped = false;
 		
 		public Dimension screenSize = null;
 		public Dimension segmentSize = null;

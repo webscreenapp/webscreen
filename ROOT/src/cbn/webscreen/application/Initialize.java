@@ -35,14 +35,14 @@ public class Initialize implements ServletContextListener {
     @Override
     public final void contextInitialized(final ServletContextEvent sce) {
     	ScreenCleanScheduler.init();
-//    	UpdateCleanScheduler.init();
+    	UpdateCleanScheduler.init();
     }
 
 
 	@Override
     public final void contextDestroyed(final ServletContextEvent sce) {
 		ScreenCleanScheduler.destroy();
-//    	UpdateCleanScheduler.destroy();
+    	UpdateCleanScheduler.destroy();
     }
 
 	private static void setServerHome() {

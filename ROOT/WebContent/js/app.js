@@ -96,6 +96,10 @@ $(function() {
 			currentContent = 'screen';
 			updateScreenId = screenId;
 			
+			screenContent.back(function() {
+				screenContent.stop();
+				showScreenListContent();
+			});
 			screenContent.getVersions(function() {
 				var versionPost = post('api/web/image/version', {screenId: screenId});
 				versionPost.fail(function(xhr, status, error) {
@@ -126,8 +130,6 @@ $(function() {
 				for (var i = 0; i < response.updates.length; i++) {
 					var update = response.updates[i];
 					
-					console.log(update);
-					
 					if (update == 'screen.new' && currentContent == 'screenList') {
 						showScreenListContent();
 					}
@@ -137,15 +139,16 @@ $(function() {
 					}
 					
 					if (update == 'screen.stop' && currentContent == 'screen') {
+						screenContent.stop();
 						showScreenListContent();
 					}
 
 					if (update == 'screen.update' && currentContent == 'screen') {
+						screenContent.stop();
 						showScreenContent(screenContent.screenId);
 					}
 					
 				}
-				
 				
 			});
 			
@@ -258,6 +261,11 @@ function ScreenListContent(){
 		    });
 		});
 		
+		$('#button-manage-access').click(function() {
+			if (typeof self.openManageAccessCallback === 'function') {
+				self.openManageAccessCallback();
+			}
+		});
 	};
 	
 	this.open = function(callback){
@@ -272,11 +280,6 @@ function ScreenListContent(){
 	
 	this.openManageAccessCallback = null;
 		
-	$('#button-manage-access').click(function() {
-		if (typeof self.openManageAccessCallback === 'function') {
-			self.openManageAccessCallback();
-		}
-	});
 }
 
 
@@ -419,15 +422,22 @@ function ScreenContent(){
 	
 	this.render = function(target) {
 		
-		var html = '<div id="container-screen">';
-		
+		var html = '';
+
 		html = html + '<button id="button-back">&lt;</button>';
+		html = html + '<div id="container-screen">';
 		html = html + '<div id="screen"></div>';
 		html = html + '';
 		
 		html = html + '</div>';
 		
 		target.html(html);
+		
+		$('#button-back').click(function() {
+			if (typeof self.backCallback === 'function') {
+				self.backCallback();
+			}
+		});
 		
 	};
 	
@@ -452,6 +462,8 @@ function ScreenContent(){
 	this.start = function(){
 		if (run) {
 			self.stop();
+		} else {
+			startContinue();
 		}
 		
 		//delayed start
@@ -477,8 +489,8 @@ function ScreenContent(){
 		images = [];
 		
 		
-		$('#screen').width(self.screen.screenWidth);
-		$('#screen').height(self.screen.screenHeight);
+		$('#screen').css('width', self.screen.screenWidth + 'px');
+		$('#screen').css('height', self.screen.screenHeight + 'px');
 		
 		for (var i = 0; i < self.screen.getNumOfSegments(); i++) {
 			
@@ -516,7 +528,7 @@ function ScreenContent(){
 	
 	const GET_VERSIONS_INTERVAL = 100;
 	const DRAW_IMAGE_INTERVAL = 2;
-	const START_DELAY = 1000;
+	const START_DELAY = 200;
 	
 	function recursiveGetVersions() {
 		if (run) {
@@ -565,6 +577,12 @@ function ScreenContent(){
 	};
 	
 	var getVersionsCallback = null;
+	
+	this.back = function(callback){
+		self.backCallback = callback;
+	};
+	
+	this.backCallback = null;
 	
 	/**
 	 * Shuffles array in place. ES6 version

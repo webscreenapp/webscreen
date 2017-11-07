@@ -21,12 +21,9 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import cbn.webscreen.data.inmemory.ScreenData;
 import cbn.webscreen.data.inmemory.ScreenData.Screen;
-import cbn.webscreen.data.persistance.entity.Login;
-import cbn.webscreen.data.persistance.entity.LoginAccess;
-import cbn.webscreen.data.persistance.entitymanager.LoginAccessEntityManager;
-import cbn.webscreen.data.persistance.entitymanager.LoginEntityManager;
 import cbn.webscreen.message.ImageRequest;
 import cbn.webscreen.message.ImageVersionRequest;
+import cbn.webscreen.security.AccessControl;
 import cbn.webscreen.security.Authentication;
 import cbn.webscreen.security.AuthenticationException;
 import cbn.webscreen.util.ResponseFactory;
@@ -60,14 +57,8 @@ public class ImageService {
 			return ResponseFactory.notFound();
 		}
 		
-		// check if own screen
-		if (!login.equals(screen.login)) {
-			
-			// check if have access
-			LoginAccess loginAccess = LoginAccessEntityManager.selectByLoginAndAccessLogin(screen.login, login);
-			if (loginAccess == null) {
-				return ResponseFactory.noAccess("no access");
-			}
+		if (!AccessControl.hasAccess(login, screen.login)) {
+			return ResponseFactory.noAccess("no access");
 		}
 		
 		byte[] bytes = screen.images.get(index);
@@ -82,9 +73,9 @@ public class ImageService {
 	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	public Response putImage(
 		@FormDataParam("image") ImageRequest request,
-		@FormDataParam("bytes") byte[] bytes) {
+		@FormDataParam("bytes") byte[] bytes) throws AuthenticationException {
 		
-		// TODO: login check
+		String login = Authentication.authenticated(httpServletRequest).getLogin();
 		
 		if (bytes == null || bytes.length == 0) {
 			return ResponseFactory.error("no data provided");
@@ -99,7 +90,9 @@ public class ImageService {
 			return ResponseFactory.error("no screen found with specified screenId");
 		}
 		
-		//TODO: check access
+		if (!login.equals(screen.login)) {
+			return ResponseFactory.noAccess("request denied: different owner");
+		}
 		
 		screen.images.put(request.index, bytes);
 		screen.versions.put(request.index, request.version);
@@ -124,14 +117,8 @@ public class ImageService {
 			return ResponseFactory.error("no screen found with specified screenId");
 		}
 
-		// check if own screen
-		if (!login.equals(screen.login)) {
-			
-			// check if have access
-			LoginAccess loginAccess = LoginAccessEntityManager.selectByLoginAndAccessLogin(screen.login, login);
-			if (loginAccess == null) {
-				return ResponseFactory.noAccess("no access");
-			}
+		if (!AccessControl.hasAccess(login, screen.login)) {
+			return ResponseFactory.noAccess("no access");
 		}
 
 		List<Integer> versions = new LinkedList<Integer>();
@@ -142,7 +129,7 @@ public class ImageService {
 			if (version != null) {
 				versions.add(version);
 			} else {
-				versions.add(0);
+				versions.add(-1);
 			}
 		}
 		

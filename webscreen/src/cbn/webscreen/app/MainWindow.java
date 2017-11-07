@@ -359,6 +359,9 @@ public class MainWindow extends JFrame {
 			    operation == OPERATION_SW_RESIZE ||
 			    operation == OPERATION_NW_RESIZE )) {
 				stopResize();
+				if (getSize().width % 2 == 1) {
+					setSize(getSize().width + 1,  getSize().height);
+				}
 			}
 			
 			cursorStartLocation = null;

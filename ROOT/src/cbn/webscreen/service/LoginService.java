@@ -13,11 +13,9 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
-import cbn.webscreen.message.ErrorResponse;
 import cbn.webscreen.message.LoginInfoResponse;
 import cbn.webscreen.message.LoginRequest;
 import cbn.webscreen.message.LoginResponse;
-import cbn.webscreen.message.SuccessResponse;
 import cbn.webscreen.security.Authentication;
 import cbn.webscreen.security.AuthenticationException;
 import cbn.webscreen.util.ResponseFactory;

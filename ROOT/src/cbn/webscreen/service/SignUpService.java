@@ -13,9 +13,7 @@ import org.apache.log4j.Logger;
 
 import cbn.webscreen.data.persistance.entity.Login;
 import cbn.webscreen.data.persistance.entitymanager.LoginEntityManager;
-import cbn.webscreen.message.ErrorResponse;
 import cbn.webscreen.message.SignUpRequest;
-import cbn.webscreen.message.SuccessResponse;
 import cbn.webscreen.security.PasswordHash;
 import cbn.webscreen.util.ResponseFactory;
 

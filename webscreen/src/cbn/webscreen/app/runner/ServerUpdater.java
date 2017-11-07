@@ -57,6 +57,8 @@ public class ServerUpdater implements Runnable {
 		
 		request.updates = new HashSet<String>(Data.updates);
 		
+		Data.updates.clear();
+		
 		Future<Response> futureResponse = RestClient.update(request);
 		
 		try {

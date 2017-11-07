@@ -1,5 +1,7 @@
 package cbn.webscreen.service;
 
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -16,6 +18,7 @@ import cbn.webscreen.data.inmemory.ScreenData.Screen;
 import cbn.webscreen.data.inmemory.Updates;
 import cbn.webscreen.message.UpdateRequest;
 import cbn.webscreen.message.UpdateResponse;
+import cbn.webscreen.security.AccessControl;
 import cbn.webscreen.security.Authentication;
 import cbn.webscreen.security.AuthenticationException;
 import cbn.webscreen.util.ResponseFactory;
@@ -47,22 +50,25 @@ public class UpdateService {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-	public Response appUpdate(UpdateRequest request) throws AuthenticationException {
+	public Response appUpdate(UpdateRequest request) throws AuthenticationException, SQLException {
 		
-		Authentication.authenticated(httpServletRequest).getLogin();
+		String login = Authentication.authenticated(httpServletRequest).getLogin();
 		
 		if (request.screenId == null || request.screenId.isEmpty()) {
 			return ResponseFactory.error("missing attribute screenId");
 		}
 		
-		// TODO: check access
-		
 		Screen screen = ScreenData.screenData.get(request.screenId);
 		if (screen == null) {
 			return ResponseFactory.error("no screen found with specified screenId");
 		}
+
+		if (!AccessControl.hasAccess(login, screen.login)) {
+			return ResponseFactory.noAccess("no access");
+		}
 		
 		for (String update : request.updates) {
+			
 			if ("screen.pause".equals(update)) {
 				ScreenData.screenData.get(request.screenId).paused = true;
 				Updates.addScreenWebUpdate(request.screenId, "screen.pause");
@@ -74,7 +80,7 @@ public class UpdateService {
 			}
 			
 			if ("screen.stop".equals(update)) {
-				ScreenData.screenData.remove(request.screenId);
+				ScreenData.screenData.get(request.screenId).stopped = true;
 				Updates.addScreenWebUpdate(request.screenId, "screen.stop");
 				Updates.addGlobalWebUpdate("screen.remove");
 				UpdateResponse updateResponse = new UpdateResponse();

@@ -14,7 +14,7 @@ public class Updates {
 
 	private static Logger logger = Logger.getLogger(Updates.class);
 	
-	private static class Update {
+	public static class Update {
 		
 		public Long index;
 		
@@ -22,14 +22,19 @@ public class Updates {
 		
 		public Long timestamp;
 		
+		@Override
+		public boolean equals(Object o) {
+			return ((Update) o).index == index;
+		}
+		
 	}
 	
 	private static long lastUpdate = 0L;
 	
-	private static List<Update> globalWebUpdates = Collections.synchronizedList(new LinkedList<Update>());
-	private static Map<String, List<Update>> screenWebUpdates = Collections.synchronizedMap(new HashMap<String, List<Update>>());
-	private static Map<String, List<Update>> loginWebUpdates = Collections.synchronizedMap(new HashMap<String, List<Update>>());
-	private static Map<String, List<Update>> screenAppUpdates = Collections.synchronizedMap(new HashMap<String, List<Update>>());
+	public static List<Update> globalWebUpdates = Collections.synchronizedList(new LinkedList<Update>());
+	public static Map<String, List<Update>> screenWebUpdates = Collections.synchronizedMap(new HashMap<String, List<Update>>());
+	public static Map<String, List<Update>> loginWebUpdates = Collections.synchronizedMap(new HashMap<String, List<Update>>());
+	public static Map<String, List<Update>> screenAppUpdates = Collections.synchronizedMap(new HashMap<String, List<Update>>());
 
 	private static synchronized long getNewUpdateIndex() {
 		return ++lastUpdate;

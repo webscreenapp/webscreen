@@ -11,11 +11,11 @@ import cbn.webscreen.data.inmemory.Updates;
 
 public class ScreenCleanJob implements InterruptableJob {
 	
-	private final long SCREEN_TIMEOUT = 5000;
+	private final long SCREEN_TIMEOUT = 10000;
 
-	Thread thread = null;
+	private Thread thread = null;
 	
-	Logger logger = Logger.getLogger(ScreenCleanJob.class);
+	private static Logger logger = Logger.getLogger(ScreenCleanJob.class);
 	
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {

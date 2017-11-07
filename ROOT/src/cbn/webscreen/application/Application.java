@@ -7,8 +7,11 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import cbn.webscreen.service.exception.AuthenticationExceptionMapper;
+import cbn.webscreen.service.exception.InvalidFormatExceptionMapper;
+import cbn.webscreen.service.exception.JsonMappingExceptionMapper;
 import cbn.webscreen.service.exception.JsonParseExceptionMapper;
 import cbn.webscreen.service.exception.SQLExceptionMapper;
+import cbn.webscreen.service.exception.UnrecognizedPropertyExceptionMapper;
 
 @ApplicationPath("/api")
 public class Application extends ResourceConfig {
@@ -21,6 +24,9 @@ public class Application extends ResourceConfig {
 		register(MultiPartFeature.class);
 		
 		register(JsonParseExceptionMapper.class);
+		register(JsonMappingExceptionMapper.class);
+		register(InvalidFormatExceptionMapper.class);
+		register(UnrecognizedPropertyExceptionMapper.class);
 		register(AuthenticationExceptionMapper.class);
 		register(SQLExceptionMapper.class);
 	}

@@ -162,9 +162,8 @@ public class LoginWindow extends JFrame{
 
 		add(loginPanel);
 		
-		login.setText("test");
-		server.setText("http://localhost:8080");
-		password.setText("test123");
+		server.setText("https://");
+		
 	}
 	
 	public String getServer() {

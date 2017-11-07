@@ -276,6 +276,44 @@ body {
 	width: 16%;
 }
 
+#container-screen {
+	position: absolute;
+    top: 2%;
+    left: 50%;
+
+	width: auto;
+	height: auto;
+
+/* 	padding: 80px; */
+    
+    transform: translate(-50%, 0%);
+	
+	color: white;
+}
+
+#container-screen #screen {
+	position: relative;
+	overflow: hidden;
+	border: 5px solid #102030;
+}
+
+#button-back {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	outline: none;
+	background-color: rgba(0, 0, 0, 0);
+	border: none; 
+	font-size: 6em;
+	color: white;
+	text-shadow: 0px 0px 3px black;
+	z-index: 10;
+}
+
+#button-back:hover {
+	text-decoration: underline;
+}
+
 @keyframes blink {
     0% {
       opacity: .2;
