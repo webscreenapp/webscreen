@@ -14,6 +14,8 @@ public class Updates {
 
 	private static Logger logger = Logger.getLogger(Updates.class);
 	
+	private static final long UPDATE_TIMEOUT = 10000;
+	
 	public static class Update {
 		
 		public Long index;
@@ -44,7 +46,7 @@ public class Updates {
 		return lastUpdate;
 	}
 	
-	public static Set<String> getWebUpdates(long lastUpdate, String login, String screenId) {
+	public static synchronized Set<String> getWebUpdates(long lastUpdate, String login, String screenId) {
 		
 		Set<String> updates = new HashSet<String>();
 		
@@ -80,7 +82,7 @@ public class Updates {
 		return updates;
 	}
 	
-	public static Set<String> getAppUpdates(long lastUpdate, String screenId) {
+	public static synchronized Set<String> getAppUpdates(long lastUpdate, String screenId) {
 		
 		Set<String> updates = new HashSet<String>();
 		
@@ -98,7 +100,7 @@ public class Updates {
 		return updates;
 	}
 	
-	public static void addScreenAppUpdate(String screenId, String update) {
+	public static synchronized void addScreenAppUpdate(String screenId, String update) {
 		Update upd = new Update();
 		upd.index = getNewUpdateIndex();
 		upd.update = update;
@@ -112,7 +114,7 @@ public class Updates {
 		updates.add(upd);
 	}
 	
-	public static void addGlobalWebUpdate(String update) {
+	public static synchronized void addGlobalWebUpdate(String update) {
 		Update upd = new Update();
 		upd.index = getNewUpdateIndex();
 		upd.update = update;
@@ -120,7 +122,7 @@ public class Updates {
 		globalWebUpdates.add(upd);
 	}
 	
-	public static void addScreenWebUpdate(String screenId, String update) {
+	public static synchronized void addScreenWebUpdate(String screenId, String update) {
 		Update upd = new Update();
 		upd.index = getNewUpdateIndex();
 		upd.update = update;
@@ -134,7 +136,7 @@ public class Updates {
 		updates.add(upd);
 	}
 	
-	public static void addLoginWebUpdate(String login, String update) {
+	public static synchronized void addLoginWebUpdate(String login, String update) {
 		Update upd = new Update();
 		upd.index = getNewUpdateIndex();
 		upd.update = update;
@@ -148,4 +150,39 @@ public class Updates {
 		updates.add(upd);
 	}
 
+	public static synchronized void cleanUpdates() {
+		for (Update update : globalWebUpdates) {
+			if (update.timestamp < System.currentTimeMillis() - UPDATE_TIMEOUT) {
+				globalWebUpdates.remove(update);
+			}
+		}
+		
+		for (String login : loginWebUpdates.keySet()) {
+			List<Update> list = loginWebUpdates.get(login);
+			for (Update update : list) {
+				if (update.timestamp < System.currentTimeMillis() - UPDATE_TIMEOUT) {
+					list.remove(update);
+				}
+			}
+		}
+		
+		for (String screenId : screenWebUpdates.keySet()) {
+			List<Update> list = screenWebUpdates.get(screenId);
+			for (Update update : list) {
+				if (update.timestamp < System.currentTimeMillis() - UPDATE_TIMEOUT) {
+					list.remove(update);
+				}
+			}
+		}
+
+		for (String screenId : screenAppUpdates.keySet()) {
+			List<Update> list = screenAppUpdates.get(screenId);
+			for (Update update : list) {
+				if (update.timestamp < System.currentTimeMillis() - UPDATE_TIMEOUT) {
+					list.remove(update);
+				}
+			}
+		}
+
+	}
 }
