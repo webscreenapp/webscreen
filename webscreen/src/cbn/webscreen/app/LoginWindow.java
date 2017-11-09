@@ -16,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import javax.swing.Box;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -92,7 +93,7 @@ public class LoginWindow extends JFrame{
 
 		statusText.setForeground(Color.WHITE);
 		
-		JLabel serverLabel = new JLabel("server");
+		JLabel serverLabel = new JLabel("server (e.g. https://example.com)");
 		serverLabel.setForeground(Color.WHITE);
 		
 		JLabel loginLabel = new JLabel("login");
@@ -111,6 +112,14 @@ public class LoginWindow extends JFrame{
 		c.gridx = 1;
 		c.gridy = 1;
 		c.insets = new Insets(0, 0, 0, 0);
+		loginPanel.add(Box.createHorizontalStrut(60), c);
+		c.gridx = 3;
+		loginPanel.add(Box.createHorizontalStrut(60), c);
+		
+		c.anchor = GridBagConstraints.SOUTHWEST;
+		c.gridx = 2;
+		c.gridy = 1;
+		c.insets = new Insets(0, 0, 0, 0);
 		loginPanel.add(serverLabel, c);
 		
 		c.gridy = 2;
@@ -118,12 +127,16 @@ public class LoginWindow extends JFrame{
 		loginPanel.add(server, c);
 		
 		c.gridy = 3;
+		c.gridx = 1;
+		c.gridwidth = 3;
 		c.insets = new Insets(16, 0, 8, 0);
 		c.anchor = GridBagConstraints.SOUTH;
 		loginPanel.add(statusText, c);
 		c.anchor = GridBagConstraints.SOUTHWEST;
 		
 		c.gridy = 4;
+		c.gridx = 2;
+		c.gridwidth = 1;
 		c.insets = new Insets(8, 0, 0, 0);
 		loginPanel.add(loginLabel, c);
 		
@@ -162,8 +175,6 @@ public class LoginWindow extends JFrame{
 
 		add(loginPanel);
 		
-		server.setText("https://");
-		
 	}
 	
 	public String getServer() {
@@ -187,6 +198,9 @@ public class LoginWindow extends JFrame{
 	}
 	
 	public void setStatusText(String text) {
+		if (text.length() > 36) {
+			text = text.substring(0, 36) + "...";
+		}
 		statusText.setText(text);
 		repaint();
 	}
