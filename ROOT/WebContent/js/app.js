@@ -660,18 +660,26 @@ function ScreenContent(){
 	}
 	
 	const GET_VERSIONS_INTERVAL = 100;
-	const DRAW_IMAGE_INTERVAL = 2;
+	const DRAW_IMAGE_INTERVAL = 5;
 	const START_DELAY = 200;
+	
+	var getVersionsQueued = false;
 	
 	function recursiveGetVersions() {
 		if (run) {
 			getVersionsCallback();
 			
-			setTimeout(function() {
-				recursiveGetVersions();
-			}, GET_VERSIONS_INTERVAL);
+			if (!getVersionsQueued){ 
+				getVersionsQueued = true;
+				setTimeout(function() {
+					getVersionsQueued = false;
+					recursiveGetVersions();
+				}, GET_VERSIONS_INTERVAL);
+			}
 		}
 	}
+
+	var drawImageQueued = false;
 
 	function recursiveDrawImage() {
 		if (run) {
@@ -699,9 +707,13 @@ function ScreenContent(){
 				pointer++;
 			}
 			
-			setTimeout(function() {
-				recursiveDrawImage();
-			}, DRAW_IMAGE_INTERVAL);
+			if (!drawImageQueued){
+				drawImageQueued = true;
+				setTimeout(function() {
+					drawImageQueued = false;
+					recursiveDrawImage();
+				}, DRAW_IMAGE_INTERVAL);
+			}
 		}
 	}
 	
@@ -747,14 +759,20 @@ function Updater(){
 	
 	const UPDATE_INTERVAL = 500;
 	
+	var updateQueued = false;
+	
 	function recursiveUpdate() {
 		if (run) {
 			
 			updateCallback();
 			
-			setTimeout(function() {
-				recursiveUpdate();
-			}, UPDATE_INTERVAL);
+			if (!updateQueued){
+				updateQueued = true;
+				setTimeout(function() {
+					updateQueued = false;
+					recursiveUpdate();
+				}, UPDATE_INTERVAL);
+			}
 		}
 	}
 	

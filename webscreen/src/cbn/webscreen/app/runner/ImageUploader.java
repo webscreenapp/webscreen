@@ -57,7 +57,6 @@ public class ImageUploader implements Runnable {
 						if (!Data.queue.isEmpty()) {
 							
 							int index = Data.queue.poll();
-							Data.inQueue.remove(index);
 							
 							int version = Data.currentVersions.get(index);
 							

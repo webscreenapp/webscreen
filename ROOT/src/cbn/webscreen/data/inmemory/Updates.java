@@ -151,36 +151,52 @@ public class Updates {
 	}
 
 	public static synchronized void cleanUpdates() {
+		List<Update> removeGlobalWebUpdates = new LinkedList<Update>();
 		for (Update update : globalWebUpdates) {
 			if (update.timestamp < System.currentTimeMillis() - UPDATE_TIMEOUT) {
-				globalWebUpdates.remove(update);
+				removeGlobalWebUpdates.add(update);
 			}
+		}
+		for (Update update : removeGlobalWebUpdates) {
+			globalWebUpdates.remove(update);
 		}
 		
 		for (String login : loginWebUpdates.keySet()) {
 			List<Update> list = loginWebUpdates.get(login);
+			List<Update> remove = new LinkedList<Update>();
 			for (Update update : list) {
 				if (update.timestamp < System.currentTimeMillis() - UPDATE_TIMEOUT) {
-					list.remove(update);
+					remove.add(update);
 				}
+			}
+			for (Update update : remove) {
+					list.remove(update);
 			}
 		}
 		
 		for (String screenId : screenWebUpdates.keySet()) {
 			List<Update> list = screenWebUpdates.get(screenId);
+			List<Update> remove = new LinkedList<Update>();
 			for (Update update : list) {
 				if (update.timestamp < System.currentTimeMillis() - UPDATE_TIMEOUT) {
-					list.remove(update);
+					remove.add(update);
 				}
+			}
+			for (Update update : remove) {
+					list.remove(update);
 			}
 		}
 
 		for (String screenId : screenAppUpdates.keySet()) {
 			List<Update> list = screenAppUpdates.get(screenId);
+			List<Update> remove = new LinkedList<Update>();
 			for (Update update : list) {
 				if (update.timestamp < System.currentTimeMillis() - UPDATE_TIMEOUT) {
-					list.remove(update);
+					remove.add(update);
 				}
+			}
+			for (Update update : remove) {
+					list.remove(update);
 			}
 		}
 

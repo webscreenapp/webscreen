@@ -25,8 +25,6 @@ public class Data {
 	public static long lastUpdate = 0;
 	public static Set<String> updates = Collections.synchronizedSet(new HashSet<String>());
 	
-	public static Set<Integer> inQueue = Collections.synchronizedSet(new HashSet<Integer>());
-	
 	public static Rectangle captureArea = new Rectangle(0, 0, 256, 128);
 	
 	public static Screen screen = new Screen(captureArea.getSize(), new Dimension(256, 128));

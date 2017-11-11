@@ -42,7 +42,7 @@ public class ImageQueuer implements Runnable {
 				Integer curVer = Data.currentVersions.get(index); 
 				Integer uplVer = Data.uploadedVersions.get(index);
 				
-				if (!Data.inQueue.contains(index)) {
+				if (!Data.queue.contains(index)) {
 					if (uplVer == null) {
 						indexesToQueue.add(index);
 					} else if (curVer > uplVer) {
@@ -56,7 +56,6 @@ public class ImageQueuer implements Runnable {
 			
 			for (Integer index : indexesToQueue) {
 				Data.queue.add(index);
-				Data.inQueue.add(index);
 			}
 			
 			try { Thread.sleep(32); } catch (InterruptedException e) {}

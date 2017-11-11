@@ -71,6 +71,7 @@ public class WebScreen {
 //						Data.currentVersions.put(index, value + 1 );
 //					}
 					
+					Data.queue.clear();
 					Data.currentVersions.clear();
 					Data.uploadedVersions.clear();
 					
